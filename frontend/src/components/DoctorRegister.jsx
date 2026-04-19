@@ -11,7 +11,7 @@ const [specialization,setSpecialization]=useState('')
 const register=async()=>{
 
 await axios.post(
-'http://localhost:5000/api/doctor-auth/register',
+'https://healthcare-domain.onrender.com/api/doctor-auth/register',
 {
 name,
 email,

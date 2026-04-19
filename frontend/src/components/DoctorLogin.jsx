@@ -9,7 +9,7 @@ const [password,setPassword]=useState('')
 const login=async()=>{
 
 await axios.post(
-'http://localhost:5000/api/doctor-auth/login',
+'https://healthcare-domain.onrender.com/api/doctor-auth/login',
 {
 email,
 password

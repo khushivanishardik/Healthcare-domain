@@ -10,7 +10,7 @@ const [appointments,setAppointments]=useState([])
 const load=async()=>{
 
 const r=await axios.get(
-'http://localhost:5000/api/appointments/all'
+'https://healthcare-domain.onrender.com/api/appointments/all'
 )
 
 setAppointments(
@@ -28,7 +28,7 @@ load()
 const book=async()=>{
 
 await axios.post(
-'http://localhost:5000/api/appointments/book',
+'https://healthcare-domain.onrender.com/api/appointments/book',
 {
 patientName,
 doctorName,

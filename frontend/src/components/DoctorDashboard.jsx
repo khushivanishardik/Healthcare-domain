@@ -8,7 +8,7 @@ const [appointments,setAppointments]=useState([])
 const load=async()=>{
 
 const r=await axios.get(
-'http://localhost:5000/api/appointments/all'
+'https://healthcare-domain.onrender.com/api/appointments/all'
 )
 
 setAppointments(
@@ -26,7 +26,7 @@ load()
 const update=async(id,status)=>{
 
 await axios.put(
-'http://localhost:5000/api/appointments/update/'+id,
+'https://healthcare-domain.onrender.com/api/appointments/update/'+{id},
 {
 status
 }
