@@ -28,6 +28,7 @@ return(
 
 <h2>Doctor Login</h2>
 
+<label>Email</label><br/>
 <input
 value={email}
 onChange={(e)=>
@@ -35,6 +36,7 @@ setEmail(e.target.value)
 }
 />
 
+<label>Password</label><br/>
 <input
 type='password'
 value={password}
