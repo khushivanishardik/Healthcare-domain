@@ -1,12 +1,13 @@
-const express = require('express');
+const express =
+require('express');
 
-const router =
+const router=
 express.Router();
 
-const Admin =
+const Admin=
 require('../models/Admin');
 
-const Doctor =
+const Doctor=
 require('../models/Doctor');
 
 
@@ -14,8 +15,6 @@ require('../models/Doctor');
 router.post(
 '/login',
 async(req,res)=>{
-
-try{
 
 const admin=
 await Admin.findOne({
@@ -36,16 +35,8 @@ message:'Invalid admin'
 
 res.json({
 message:
-'Admin Login Success'
+'Admin login success'
 });
-
-}catch(err){
-
-res.status(500).json({
-message:'Server error'
-});
-
-}
 
 });
 
@@ -55,24 +46,16 @@ router.get(
 '/pending-doctors',
 async(req,res)=>{
 
-try{
-
 const doctors=
 await Doctor.find({
+
 status:'pending'
+
 });
 
 res.json(
 doctors
 );
-
-}catch(err){
-
-res.status(500).json({
-message:'Server error'
-});
-
-}
 
 });
 
@@ -81,8 +64,6 @@ message:'Server error'
 router.put(
 '/approve/:id',
 async(req,res)=>{
-
-try{
 
 await Doctor.findByIdAndUpdate(
 
@@ -96,18 +77,11 @@ status:'approved'
 
 res.json({
 message:
-'Doctor Approved'
+'Doctor approved'
 });
 
-}catch(err){
-
-res.status(500).json({
-message:'Server error'
 });
 
-}
-
-});
 
 
 router.get(
@@ -119,14 +93,14 @@ await Doctor.find({
 
 status:'approved'
 
-})
+});
 
 res.json(
 doctors
-)
+);
 
 });
 
 
 
-module.exports = router;
+module.exports=router;

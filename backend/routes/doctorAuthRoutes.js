@@ -1,14 +1,21 @@
 const express = require('express');
+
 const router = express.Router();
 
-const Doctor = require('../models/Doctor');
+const Doctor =
+require('../models/Doctor');
 
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+const bcrypt =
+require('bcryptjs');
+
+const jwt =
+require('jsonwebtoken');
 
 
 
-router.post('/register', async(req,res)=>{
+router.post(
+'/register',
+async(req,res)=>{
 
 try{
 
@@ -17,10 +24,11 @@ name,
 email,
 password,
 specialization
-} = req.body;
+}=req.body;
 
 
-const existing =
+
+const existing=
 await Doctor.findOne({
 email
 });
@@ -28,34 +36,49 @@ email
 if(existing){
 
 return res.status(400).json({
-message:'Doctor already exists'
+message:
+'Doctor already exists'
 });
 
 }
 
 
-const hashedPassword =
+
+const hashedPassword=
 await bcrypt.hash(
 password,
 10
 );
 
 
+
 await Doctor.create({
 
 name,
+
 email,
+
 password:hashedPassword,
-specialization
+
+specialization,
+
+status:'pending'
 
 });
+
 
 
 res.json({
-message:'Doctor registered successfully'
+
+message:
+'Application submitted for admin approval'
+
 });
 
+
 }catch(err){
+
+console.log(err);
 
 res.status(500).json({
 message:'Server error'
@@ -67,7 +90,9 @@ message:'Server error'
 
 
 
-router.post('/login', async(req,res)=>{
+router.post(
+'/login',
+async(req,res)=>{
 
 try{
 
@@ -77,7 +102,8 @@ password
 }=req.body;
 
 
-const doctor =
+
+const doctor=
 await Doctor.findOne({
 email
 });
@@ -86,10 +112,28 @@ email
 if(!doctor){
 
 return res.status(400).json({
-message:'Invalid credentials'
+message:
+'Invalid credentials'
 });
 
 }
+
+
+
+if(
+doctor.status
+!== 'approved'
+){
+
+return res.status(403).json({
+
+message:
+'Awaiting admin approval'
+
+});
+
+}
+
 
 
 const isMatch=
@@ -102,13 +146,16 @@ doctor.password
 if(!isMatch){
 
 return res.status(400).json({
-message:'Invalid credentials'
+message:
+'Invalid credentials'
 });
 
 }
 
 
-const token=jwt.sign(
+
+const token=
+jwt.sign(
 
 {
 id:doctor._id,
@@ -125,6 +172,7 @@ expiresIn:'1d'
 );
 
 
+
 res.json({
 
 message:
@@ -134,7 +182,10 @@ token
 
 });
 
+
 }catch(err){
+
+console.log(err);
 
 res.status(500).json({
 message:'Server error'
@@ -143,6 +194,7 @@ message:'Server error'
 }
 
 });
+
 
 
 module.exports = router;
