@@ -7,9 +7,11 @@ const API='https://healthcare-domain.onrender.com'
 
 const doctorEmail='doctor4@gmail.com'
 
+
 const [doctor,setDoctor]=useState(null)
 
 const [appointments,setAppointments]=useState([])
+
 
 
 const fetchDoctor=async()=>{
@@ -32,13 +34,12 @@ console.log(err)
 }
 
 
+
 const fetchAppointments=async()=>{
 
 if(!doctor?._id){
 return
 }
-
-try{
 
 const res=
 await axios.get(
@@ -53,16 +54,14 @@ a=>a.doctorId===doctor._id
 
 )
 
-}catch(err){
-console.log(err)
 }
 
-}
 
 
 useEffect(()=>{
 fetchDoctor()
 },[])
+
 
 
 useEffect(()=>{
@@ -72,6 +71,29 @@ fetchAppointments()
 }
 
 },[doctor])
+
+
+
+const updateStatus=
+async(id,status)=>{
+
+await axios.put(
+
+API+
+'/api/appointments/update/'
++
+id,
+
+{
+status
+}
+
+)
+
+fetchAppointments()
+
+}
+
 
 
 if(!doctor){
@@ -85,37 +107,171 @@ Loading Doctor Dashboard...
 }
 
 
+
 return(
 
 <div>
 
-<h1>Doctor Dashboard</h1>
+<h1>
+Doctor Dashboard
+</h1>
 
-<button onClick={()=>setView('landing')}>
+<button
+onClick={()=>setView('landing')}
+>
 Logout
 </button>
 
-<h2>Personal Details</h2>
 
-<p>Name: {doctor.name}</p>
+<hr/>
 
-<p>Specialization: {doctor.specialization}</p>
 
-<h2>My Appointments</h2>
+<h2>
+Personal Details
+</h2>
+
+<p>
+Name:
+{doctor.name}
+</p>
+
+<p>
+Specialization:
+{doctor.specialization}
+</p>
+
+
+<hr/>
+
+
+<h2>
+My Appointments
+</h2>
+
 
 {appointments.length===0 && (
 <p>No Appointments</p>
 )}
 
-{appointments.map(item=>(
+
+
+{appointments.map((item)=>(
 
 <div key={item._id}>
 
 <p>
+
+Patient:
 {item.patientName}
+
 |
+
+Date:
+{item.appointmentDate}
+
+|
+
+Time:
+{item.appointmentTime}
+
+|
+
+Status:
 {item.status}
+
 </p>
+
+
+
+{
+item.status==='Pending'
+&&
+(
+<>
+
+<button
+onClick={()=>
+updateStatus(
+item._id,
+'Accepted'
+)
+}
+>
+Confirm
+</button>
+
+
+
+<button
+onClick={()=>
+updateStatus(
+item._id,
+'Rejected'
+)
+}
+>
+Decline
+</button>
+
+</>
+)
+}
+
+
+
+{
+item.status==='Accepted'
+&&
+(
+<button
+onClick={()=>
+updateStatus(
+item._id,
+'Completed'
+)
+}
+>
+Complete
+</button>
+)
+}
+
+
+
+{
+item.status==='Completed'
+&&
+(
+<div>
+
+Completed ✔
+
+<br/>
+
+{
+new Date(
+item.completedAt
+).toLocaleString()
+}
+
+</div>
+)
+}
+
+
+
+{
+item.status==='Rejected'
+&&
+(
+<div>
+Declined
+</div>
+)
+}
+
+
+<hr/>
 
 </div>
 
