@@ -1,20 +1,30 @@
 const express = require('express');
+
 const router = express.Router();
 
 const Profile = require('../models/Profile');
 
-router.post('/save', async (req,res)=>{
+
+
+router.post('/save', async(req,res)=>{
 
  try{
 
-   console.log(req.body);
+   const profile =
+   await Profile.findOneAndUpdate(
 
-   const profile = await Profile.create({
-     name:req.body.name,
-     age:req.body.age,
-     bloodGroup:req.body.bloodGroup,
-     allergies:req.body.allergies
-   });
+    {
+      userEmail:req.body.userEmail
+    },
+
+    req.body,
+
+    {
+      upsert:true,
+      new:true
+    }
+
+   );
 
    res.json({
      message:'Profile saved',
@@ -23,27 +33,31 @@ router.post('/save', async (req,res)=>{
 
  }catch(err){
 
-   console.error(err);
-
    res.status(500).json({
-     message:'Server error'
+    message:'Server error'
    });
 
  }
 
 });
 
-router.get('/all', async(req,res)=>{
+
+
+router.get('/one/:email', async(req,res)=>{
 
  try{
 
-   const profiles = await Profile.find();
+   const profile =
+   await Profile.findOne({
 
-   res.json(profiles);
+    userEmail:
+    req.params.email
+
+   });
+
+   res.json(profile);
 
  }catch(err){
-
-   console.error(err);
 
    res.status(500).json({
     message:'Server error'
@@ -52,5 +66,6 @@ router.get('/all', async(req,res)=>{
  }
 
 });
+
 
 module.exports = router;

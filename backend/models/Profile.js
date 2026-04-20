@@ -2,18 +2,28 @@ const mongoose = require('mongoose');
 
 const profileSchema = new mongoose.Schema({
 
-name:String,
+  userEmail: {
+    type: String,
+    unique: true
+  },
 
-age:String,
+  name: String,
 
-bloodGroup:String,
+  age: String,
 
-allergies:String
+  gender: String,
+
+  bloodGroup: String,
+
+  phone: String,
+
+  address: String,
+
+  allergies: String
 
 });
 
-module.exports=
-mongoose.model(
+module.exports = mongoose.model(
 'Profile',
 profileSchema
 );

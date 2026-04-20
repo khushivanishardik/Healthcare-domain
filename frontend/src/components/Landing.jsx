@@ -2,61 +2,56 @@ export default function Landing({setView}){
 
 return(
 
-<div className='page'>
+<div>
 
-<div className='card'>
+<h1>
+Healthcare System
+</h1>
 
-<div className='hero'>
-HealthCare Pro
-</div>
+<br/>
 
-<div className='subtitle'>
-Professional portal for patients and doctors
-</div>
-
-<div className='grid'>
-
-<div className='stat'>
-
-<h2>Patients</h2>
 
 <button
-onClick={()=>setView('patientLogin')}
+onClick={()=>setView(
+'patientLogin'
+)}
 >
-Login
+Patient
 </button>
+
 
 <button
-className='secondary'
-onClick={()=>setView('patientRegister')}
+onClick={()=>setView(
+'doctorLogin'
+)}
+style={{
+marginLeft:'10px'
+}}
 >
-Register
+Doctor
 </button>
 
-</div>
-
-<div className='stat'>
-
-<h2>Doctors</h2>
 
 <button
-onClick={()=>setView('doctorLogin')}
+onClick={()=>setView(
+'adminDashboard'
+)}
+style={{
+marginLeft:'10px'
+}}
 >
-Login
+Admin
 </button>
 
-<button
-className='secondary'
-onClick={()=>setView('doctorRegister')}
->
-Register
-</button>
 
-</div>
+<br/><br/>
 
-</div>
+<p>
 
-</div>
+Select your role
+to continue
+
+</p>
 
 </div>
 

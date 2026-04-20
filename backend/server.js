@@ -1,59 +1,96 @@
 const express = require('express');
+
+const mongoose = require('mongoose');
+
 const cors = require('cors');
-const dotenv = require('dotenv');
 
-const connectDB = require('./config/db');
-const authRoutes = require('./routes/authRoutes');
+require('dotenv').config();
 
-dotenv.config();
 
-connectDB();
 
-const app = express();
+const authRoutes =
+require('./routes/authRoutes');
 
-app.use(cors());
-app.use(express.json());
+const doctorAuthRoutes =
+require('./routes/doctorAuthRoutes');
 
-app.use('/api/auth', authRoutes);
+const adminRoutes =
+require('./routes/adminRoutes');
+
+const profileRoutes =
+require('./routes/profileRoutes');
 
 const appointmentRoutes =
 require('./routes/appointmentRoutes');
 
-app.use(
- '/api/appointments',
- appointmentRoutes
+
+
+const app = express();
+
+
+
+app.use(cors());
+
+app.use(express.json());
+
+
+
+mongoose.connect(
+process.env.MONGO_URI
+)
+.then(()=>{
+
+console.log(
+'MongoDB Connected'
 );
 
-const profileRoutes=
-require('./routes/profileRoutes');
+})
+.catch((err)=>{
+
+console.log(err);
+
+});
+
+
 
 app.use(
-'/api/profile',
-profileRoutes
+'/api/auth',
+authRoutes
 );
 
-const notificationRoutes=
-require('./routes/notificationRoutes');
-
-app.use(
-'/api/notifications',
-notificationRoutes
-);
-
-const doctorAuthRoutes =
-require('./routes/doctorAuthRoutes');
 
 app.use(
 '/api/doctor-auth',
 doctorAuthRoutes
 );
 
-app.get('/', (req,res)=>{
-   res.send('API Running');
-});
 
-const PORT = process.env.PORT || 5000;
+app.use(
+'/api/admin',
+adminRoutes
+);
 
-app.listen(PORT, ()=>{
-   console.log(`Server running on port ${PORT}`);
-});
+
+app.use(
+'/api/profile',
+profileRoutes
+);
+
+
+app.use(
+'/api/appointments',
+appointmentRoutes
+);
+
+
+
+app.listen(
+5000,
+()=>{
+
+console.log(
+'Server running on port 5000'
+);
+
+}
+);

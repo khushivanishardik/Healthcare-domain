@@ -1,124 +1,233 @@
-import {useState,useEffect} from 'react'
-import axios from 'axios'
+import {useEffect,useState} from 'react';
+
+import axios from 'axios';
+
+
 
 export default function DoctorDashboard({setView}){
 
-const [appointments,setAppointments]=useState([])
+const doctorName='Dr Sharma';
 
-const load=async()=>{
 
-const r=await axios.get(
-'https://healthcare-domain.onrender.com/api/appointments/all'
+const [appointments,
+setAppointments]=
+useState([])
+
+
+
+const fetchAppointments=
+async()=>{
+
+const res=
+await axios.get(
+'http://localhost:5000/api/appointments/all'
 )
 
+
 setAppointments(
-r.data
+
+res.data.filter(
+
+a=>
+a.doctorName===
+doctorName
+
+)
+
 )
 
 }
+
+
 
 useEffect(()=>{
 
-load()
+fetchAppointments()
 
 },[])
 
-const update=async(id,status)=>{
+
+
+const updateStatus=
+async(id,status)=>{
 
 await axios.put(
-'https://healthcare-domain.onrender.com/api/appointments/update/'+{id},
+
+'http://localhost:5000/api/appointments/update/'+id,
+
 {
 status
 }
+
 )
 
-load()
+fetchAppointments()
 
 }
+
+
 
 return(
 
-<div className='page'>
+<div>
 
-<div className='card'>
-
-<h1 className='hero'>
+<h1>
 Doctor Dashboard
 </h1>
 
-<div className='grid'>
-
-<div className='stat'>
-Appointments:
-{appointments.length}
-</div>
-
-<div className='stat'>
-Doctor Workflow Active
-</div>
-
-</div>
-
-<h2 className='sectionTitle'>
-Manage Appointments
-</h2>
-
-{appointments.map((a)=>(
-
-<div
-className='item'
-key={a._id}
->
-
-{a.patientName}
-
-|
-
-{a.doctorName}
-
-|
-
-{a.appointmentDate}
-
-|
-
-{a.status}
-
-<br/><br/>
-
 <button
-onClick={()=>
-update(
-a._id,
-'Confirmed'
-)
-}
->
-Confirm
-</button>
-
-<button
-onClick={()=>
-update(
-a._id,
-'Completed'
-)
-}
->
-Complete
-</button>
-
-</div>
-
-))}
-
-<button
-onClick={()=>setView('landing')}
+onClick={()=>setView(
+'landing'
+)}
 >
 Logout
 </button>
 
+<hr/>
+
+
+<h2>
+My Appointments
+</h2>
+
+
+
+{appointments.map((item)=>(
+
+<div key={item._id}>
+
+<p>
+
+Patient:
+{item.patientName}
+
+|
+
+Date:
+{item.appointmentDate}
+
+|
+
+Time:
+{item.appointmentTime}
+
+|
+
+Status:
+{item.status}
+
+</p>
+
+
+
+{
+item.status==="Pending"
+&&
+(
+<>
+
+<button
+
+onClick={()=>
+updateStatus(
+item._id,
+'Accepted'
+)
+}
+
+>
+Accept
+</button>
+
+
+
+<button
+
+onClick={()=>
+updateStatus(
+item._id,
+'Rejected'
+)
+}
+
+>
+Reject
+</button>
+
+</>
+
+)
+}
+
+
+
+{
+item.status==="Accepted"
+&&
+(
+
+<button
+
+onClick={()=>
+updateStatus(
+item._id,
+'Completed'
+)
+}
+
+>
+Complete
+</button>
+
+)
+}
+
+
+
+{
+item.status==="Completed"
+&&
+(
+
+<div>
+
+Completed ✔
+
+<br/>
+
+{
+new Date(
+item.completedAt
+).toLocaleString()
+}
+
 </div>
+
+)
+}
+
+
+
+{
+item.status==="Rejected"
+&&
+(
+
+<div>
+
+Rejected
+
+</div>
+
+)
+}
+
+
+<hr/>
+
+</div>
+
+))}
 
 </div>
 
