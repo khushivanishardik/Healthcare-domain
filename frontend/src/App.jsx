@@ -1,38 +1,38 @@
 import React,{useState}
 from 'react'
 
-import Landing
-from './components/Landing'
+import Landing from './components/Landing'
 
-import PatientLogin
-from './components/PatientLogin'
+import PatientRegister from './components/PatientRegister'
 
-import DoctorLogin
-from './components/DoctorLogin'
+import PatientLogin from './components/PatientLogin'
 
-import PatientDashboard
-from './components/PatientDashboard'
+import DoctorRegister from './components/DoctorRegister'
 
-import DoctorDashboard
-from './components/DoctorDashboard'
+import DoctorLogin from './components/DoctorLogin'
 
-import AdminDashboard
-from './components/AdminDashboard'
+import PatientDashboard from './components/PatientDashboard'
 
-import PatientRegister
-from './components/PatientRegister'
+import DoctorDashboard from './components/DoctorDashboard'
 
-import DoctorRegister
-from './components/DoctorRegister'
+import AdminDashboard from './components/AdminDashboard'
 
 
 
 export default function App(){
 
 const [view,setView]=
-useState(
-'landing'
-)
+useState('landing')
+
+
+const [currentUserEmail,
+setCurrentUserEmail]=
+useState('')
+
+
+const [currentDoctorEmail,
+setCurrentDoctorEmail]=
+useState('')
 
 
 
@@ -43,11 +43,15 @@ return(
 {
 view==='landing'
 &&
-<Landing
-setView={setView}
-/>
+<Landing setView={setView}/>
 }
 
+
+{
+view==='patientRegister'
+&&
+<PatientRegister setView={setView}/>
+}
 
 
 {
@@ -55,7 +59,16 @@ view==='patientLogin'
 &&
 <PatientLogin
 setView={setView}
+setCurrentUserEmail={setCurrentUserEmail}
 />
+}
+
+
+
+{
+view==='doctorRegister'
+&&
+<DoctorRegister setView={setView}/>
 }
 
 
@@ -65,6 +78,7 @@ view==='doctorLogin'
 &&
 <DoctorLogin
 setView={setView}
+setCurrentDoctorEmail={setCurrentDoctorEmail}
 />
 }
 
@@ -75,6 +89,7 @@ view==='patientDashboard'
 &&
 <PatientDashboard
 setView={setView}
+currentUserEmail={currentUserEmail}
 />
 }
 
@@ -85,6 +100,7 @@ view==='doctorDashboard'
 &&
 <DoctorDashboard
 setView={setView}
+currentDoctorEmail={currentDoctorEmail}
 />
 }
 
@@ -93,26 +109,7 @@ setView={setView}
 {
 view==='adminDashboard'
 &&
-<AdminDashboard
-setView={setView}
-/>
-}
-
-{
-view==='patientRegister'
-&&
-<PatientRegister
-setView={setView}
-/>
-}
-
-
-{
-view==='doctorRegister'
-&&
-<DoctorRegister
-setView={setView}
-/>
+<AdminDashboard setView={setView}/>
 }
 
 </>

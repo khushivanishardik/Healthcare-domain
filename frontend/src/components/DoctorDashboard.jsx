@@ -1,11 +1,14 @@
 import {useEffect,useState} from 'react'
 import axios from 'axios'
 
-export default function DoctorDashboard({setView}){
+export default function DoctorDashboard({
+setView,
+currentDoctorEmail
+}){
 
 const API='https://healthcare-domain.onrender.com'
 
-const doctorEmail='doctor4@gmail.com'
+const doctorEmail=currentDoctorEmail
 
 
 const [doctor,setDoctor]=useState(null)

@@ -1,19 +1,42 @@
-import {useState} from 'react'
-import axios from 'axios'
+import {useState}
+from 'react'
 
-export default function PatientLogin({setView}){
+import axios
+from 'axios'
 
-const [email,setEmail]=useState('')
-const [password,setPassword]=useState('')
 
-const login=async()=>{
+export default function PatientLogin({
+setView,
+setCurrentUserEmail
+}){
+
+const API=
+'https://healthcare-domain.onrender.com'
+
+const [email,setEmail]=
+useState('')
+
+const [password,setPassword]=
+useState('')
+
+
+
+const login=
+async()=>{
 
 await axios.post(
-'https://healthcare-domain.onrender.com/api/auth/login',
+
+API+'/api/auth/login',
+
 {
 email,
 password
 }
+
+)
+
+setCurrentUserEmail(
+email
 )
 
 setView(
@@ -22,23 +45,25 @@ setView(
 
 }
 
+
+
 return(
 
 <div>
 
 <h2>Patient Login</h2>
 
-<label>Email</label><br/>
 <input
+placeholder='Email'
 value={email}
 onChange={(e)=>
 setEmail(e.target.value)
 }
 />
 
-<label>Password</label><br/>
 <input
 type='password'
+placeholder='Password'
 value={password}
 onChange={(e)=>
 setPassword(e.target.value)
@@ -47,12 +72,6 @@ setPassword(e.target.value)
 
 <button onClick={login}>
 Login
-</button>
-
-<button
-onClick={()=>setView('landing')}
->
-Back
 </button>
 
 </div>

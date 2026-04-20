@@ -4,13 +4,15 @@ from 'react'
 import axios
 from 'axios'
 
-export default function PatientDashboard({setView}){
+export default function PatientDashboard({
+setView,
+currentUserEmail
+}){
 
 const API =
 'https://healthcare-domain.onrender.com'
 
-const userEmail=
-'user3@gmail.com'
+const userEmail=currentUserEmail
 
 const [editing,setEditing]=useState(false)
 
