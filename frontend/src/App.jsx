@@ -22,6 +22,9 @@ from './components/AdminDashboard'
 import PatientRegister
 from './components/PatientRegister'
 
+import DoctorRegister
+from './components/DoctorRegister'
+
 
 
 export default function App(){
@@ -99,6 +102,15 @@ setView={setView}
 view==='patientRegister'
 &&
 <PatientRegister
+setView={setView}
+/>
+}
+
+
+{
+view==='doctorRegister'
+&&
+<DoctorRegister
 setView={setView}
 />
 }

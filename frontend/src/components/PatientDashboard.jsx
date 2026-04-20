@@ -4,94 +4,62 @@ from 'react'
 import axios
 from 'axios'
 
-
 export default function PatientDashboard({setView}){
+
+const API =
+'https://healthcare-domain.onrender.com'
 
 const userEmail=
 'user3@gmail.com'
 
-const [editing,setEditing]=
-useState(false)
+const [editing,setEditing]=useState(false)
 
-const [profile,setProfile]=
-useState({
-
+const [profile,setProfile]=useState({
 name:'',
 age:'',
 gender:'',
 phone:''
-
 })
 
-const [appointments,
-setAppointments]=
-useState([])
+const [appointments,setAppointments]=useState([])
 
-const [doctors,
-setDoctors]=
-useState([])
+const [doctors,setDoctors]=useState([])
 
-const [doctorId,
-setDoctorId]=
-useState('')
+const [doctorId,setDoctorId]=useState('')
+const [doctorName,setDoctorName]=useState('')
+const [specialization,setSpecialization]=useState('')
 
-const [doctorName,
-setDoctorName]=
-useState('')
-
-const [specialization,
-setSpecialization]=
-useState('')
-
-const [appointmentDate,
-setAppointmentDate]=
-useState('')
-
-const [appointmentTime,
-setAppointmentTime]=
-useState('')
+const [appointmentDate,setAppointmentDate]=useState('')
+const [appointmentTime,setAppointmentTime]=useState('')
 
 
 
-const fetchProfile=
-async()=>{
+const fetchProfile=async()=>{
 
 const res=
 await axios.get(
-
-'http://localhost:5000/api/profile/one/'
-+userEmail
-
+API+'/api/profile/one/'+userEmail
 )
 
 if(res.data){
-
-setProfile(
-res.data
-)
-
+setProfile(res.data)
 }
 
 }
 
 
 
-const fetchAppointments=
-async()=>{
+const fetchAppointments=async()=>{
 
 const res=
 await axios.get(
-'http://localhost:5000/api/appointments/all'
+API+'/api/appointments/all'
 )
 
 setAppointments(
 
 res.data.filter(
-
-a=>
-a.patientId===
-userEmail
-
+a=>a.patientId===userEmail
 )
 
 )
@@ -100,14 +68,11 @@ userEmail
 
 
 
-const fetchDoctors=
-async()=>{
+const fetchDoctors=async()=>{
 
 const res=
 await axios.get(
-
-'http://localhost:5000/api/admin/approved-doctors'
-
+API+'/api/admin/approved-doctors'
 )
 
 setDoctors(
@@ -130,12 +95,11 @@ fetchDoctors()
 
 
 
-const saveProfile=
-async()=>{
+const saveProfile=async()=>{
 
 await axios.post(
 
-'http://localhost:5000/api/profile/save',
+API+'/api/profile/save',
 
 {
 userEmail,
@@ -150,12 +114,11 @@ setEditing(false)
 
 
 
-const book=
-async()=>{
+const book=async()=>{
 
 await axios.post(
 
-'http://localhost:5000/api/appointments/book',
+API+'/api/appointments/book',
 
 {
 
@@ -188,73 +151,50 @@ return(
 
 <div>
 
-<h1>
-User Dashboard
-</h1>
+<h1>Patient Dashboard</h1>
 
 <button
-onClick={()=>setView(
-'landing'
-)}
+onClick={()=>setView('landing')}
 >
 Logout
 </button>
 
+<hr/>
 
+<h2>Personal Details</h2>
 
-<h2>
-My Profile
-</h2>
+{!editing && (
 
-
-
-{
-!editing
-&&
-(
 <div>
 
-<p>
-Name:
-{profile.name}
-</p>
+<p>Name: {profile.name||'Not set'}</p>
 
-<p>
-Age:
-{profile.age}
-</p>
+<p>Age: {profile.age||'Not set'}</p>
 
-<p>
-Gender:
-{profile.gender}
-</p>
+<p>Gender: {profile.gender||'Not set'}</p>
 
-<p>
-Phone:
-{profile.phone}
-</p>
+<p>Phone: {profile.phone||'Not set'}</p>
 
 <button
-onClick={()=>setEditing(
-true
-)}
+onClick={()=>setEditing(true)}
 >
 Edit Profile
 </button>
 
 </div>
-)
-}
+
+)}
 
 
 
-{
-editing
-&&
-(
+{editing && (
+
 <div>
 
+<label>Name</label>
+
 <input
+placeholder='Enter Full Name'
 value={profile.name||''}
 onChange={(e)=>
 setProfile({
@@ -264,7 +204,10 @@ name:e.target.value
 }
 />
 
+<label>Age</label>
+
 <input
+placeholder='Enter Age'
 value={profile.age||''}
 onChange={(e)=>
 setProfile({
@@ -274,7 +217,10 @@ age:e.target.value
 }
 />
 
+<label>Gender</label>
+
 <input
+placeholder='Enter Gender'
 value={profile.gender||''}
 onChange={(e)=>
 setProfile({
@@ -284,7 +230,10 @@ gender:e.target.value
 }
 />
 
+<label>Phone</label>
+
 <input
+placeholder='Enter Phone'
 value={profile.phone||''}
 onChange={(e)=>
 setProfile({
@@ -299,46 +248,32 @@ Save
 </button>
 
 <button
-onClick={()=>setEditing(
-false
-)}
+onClick={()=>setEditing(false)}
 >
 Cancel
 </button>
 
 </div>
-)
-}
 
+)}
 
+<hr/>
 
-<h2>
-Book Appointment
-</h2>
+<h2>Book Appointment</h2>
 
 <select
 onChange={(e)=>{
 
 const d=
 doctors.find(
-x=>
-x._id===
-e.target.value
+x=>x._id===e.target.value
 )
 
 if(d){
 
-setDoctorId(
-d._id
-)
-
-setDoctorName(
-d.name
-)
-
-setSpecialization(
-d.specialization
-)
+setDoctorId(d._id)
+setDoctorName(d.name)
+setSpecialization(d.specialization)
 
 }
 
@@ -349,26 +284,20 @@ d.specialization
 Select Approved Doctor
 </option>
 
-
 {doctors.map((d)=>(
 
 <option
 key={d._id}
 value={d._id}
 >
-
-{d.name}
-
--
-
-{d.specialization}
-
+{d.name} - {d.specialization}
 </option>
 
 ))}
 
 </select>
 
+<br/><br/>
 
 <input
 type='date'
@@ -379,6 +308,7 @@ e.target.value
 )}
 />
 
+<br/><br/>
 
 <input
 type='time'
@@ -389,15 +319,15 @@ e.target.value
 )}
 />
 
+<br/><br/>
+
 <button onClick={book}>
-Book
+Book Appointment
 </button>
 
+<hr/>
 
-
-<h2>
-Appointment History
-</h2>
+<h2>Appointment History</h2>
 
 {appointments.map((a)=>(
 

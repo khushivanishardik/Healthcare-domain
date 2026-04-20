@@ -16,20 +16,26 @@ onClick={()=>setView(
 Patient
 </button>
 
+
 <button
 onClick={()=>setView(
-'doctorLogin'
+'doctorRegister'
 )}
-style={{marginLeft:'10px'}}
+style={{
+marginLeft:'10px'
+}}
 >
 Doctor
 </button>
+
 
 <button
 onClick={()=>setView(
 'adminDashboard'
 )}
-style={{marginLeft:'10px'}}
+style={{
+marginLeft:'10px'
+}}
 >
 Admin
 </button>

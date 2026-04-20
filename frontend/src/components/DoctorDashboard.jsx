@@ -20,7 +20,7 @@ async()=>{
 
 const res=
 await axios.get(
-'http://localhost:5000/api/appointments/all'
+'https://healthcare-domain.onrender.com/api/appointments/all'
 )
 
 
@@ -53,7 +53,7 @@ async(id,status)=>{
 
 await axios.put(
 
-'http://localhost:5000/api/appointments/update/'+id,
+'https://healthcare-domain.onrender.com/api/appointments/update/'+id,
 
 {
 status

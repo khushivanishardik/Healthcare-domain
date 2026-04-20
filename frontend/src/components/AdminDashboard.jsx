@@ -19,7 +19,7 @@ async()=>{
 const res=
 await axios.get(
 
-'http://localhost:5000/api/admin/pending-doctors'
+'https://healthcare-domain.onrender.com/api/admin/pending-doctors'
 
 )
 
@@ -44,7 +44,7 @@ async(id)=>{
 
 await axios.put(
 
-'http://localhost:5000/api/admin/approve/'+id
+'https://healthcare-domain.onrender.com/api/admin/approve/'+id
 
 )
 
