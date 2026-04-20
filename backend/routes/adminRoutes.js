@@ -110,5 +110,23 @@ message:'Server error'
 });
 
 
+router.get(
+'/approved-doctors',
+async(req,res)=>{
+
+const doctors=
+await Doctor.find({
+
+status:'approved'
+
+})
+
+res.json(
+doctors
+)
+
+});
+
+
 
 module.exports = router;

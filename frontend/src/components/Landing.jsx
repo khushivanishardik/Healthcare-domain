@@ -8,50 +8,31 @@ return(
 Healthcare System
 </h1>
 
-<br/>
-
-
 <button
 onClick={()=>setView(
-'patientLogin'
+'patientRegister'
 )}
 >
 Patient
 </button>
 
-
 <button
 onClick={()=>setView(
 'doctorLogin'
 )}
-style={{
-marginLeft:'10px'
-}}
+style={{marginLeft:'10px'}}
 >
 Doctor
 </button>
-
 
 <button
 onClick={()=>setView(
 'adminDashboard'
 )}
-style={{
-marginLeft:'10px'
-}}
+style={{marginLeft:'10px'}}
 >
 Admin
 </button>
-
-
-<br/><br/>
-
-<p>
-
-Select your role
-to continue
-
-</p>
 
 </div>
 

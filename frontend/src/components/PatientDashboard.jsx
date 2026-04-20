@@ -1,103 +1,162 @@
-import {useEffect,useState} from 'react';
-import axios from 'axios';
+import {useEffect,useState}
+from 'react'
+
+import axios
+from 'axios'
+
 
 export default function PatientDashboard({setView}){
 
-const userEmail='user3@gmail.com';
+const userEmail=
+'user3@gmail.com'
 
-const [profile,setProfile]=useState({
+const [editing,setEditing]=
+useState(false)
+
+const [profile,setProfile]=
+useState({
+
 name:'',
 age:'',
 gender:'',
-bloodGroup:'',
-phone:'',
-address:'',
-allergies:''
-});
+phone:''
 
-const [appointments,setAppointments]=useState([]);
+})
 
-const [doctorId,setDoctorId]=useState('doc1');
-const [doctorName,setDoctorName]=useState('Dr Sharma');
-const [specialization,setSpecialization]=useState('Cardiology');
+const [appointments,
+setAppointments]=
+useState([])
 
-const [appointmentDate,setAppointmentDate]=useState('');
-const [appointmentTime,setAppointmentTime]=useState('');
+const [doctors,
+setDoctors]=
+useState([])
+
+const [doctorId,
+setDoctorId]=
+useState('')
+
+const [doctorName,
+setDoctorName]=
+useState('')
+
+const [specialization,
+setSpecialization]=
+useState('')
+
+const [appointmentDate,
+setAppointmentDate]=
+useState('')
+
+const [appointmentTime,
+setAppointmentTime]=
+useState('')
 
 
 
-const fetchAppointments=async()=>{
+const fetchProfile=
+async()=>{
+
+const res=
+await axios.get(
+
+'http://localhost:5000/api/profile/one/'
++userEmail
+
+)
+
+if(res.data){
+
+setProfile(
+res.data
+)
+
+}
+
+}
+
+
+
+const fetchAppointments=
+async()=>{
 
 const res=
 await axios.get(
 'http://localhost:5000/api/appointments/all'
-);
+)
 
 setAppointments(
 
 res.data.filter(
-a=>a.patientId===userEmail
+
+a=>
+a.patientId===
+userEmail
+
 )
 
-);
-
-};
-
-
-
-const fetchProfile=async()=>{
-
-try{
-
-const res=
-await axios.get(
-'http://localhost:5000/api/profile/one/'+userEmail
-);
-
-if(res.data){
-
-setProfile(res.data);
+)
 
 }
 
-}catch(err){}
 
-};
+
+const fetchDoctors=
+async()=>{
+
+const res=
+await axios.get(
+
+'http://localhost:5000/api/admin/approved-doctors'
+
+)
+
+setDoctors(
+res.data
+)
+
+}
 
 
 
 useEffect(()=>{
 
-fetchProfile();
+fetchProfile()
 
-fetchAppointments();
+fetchAppointments()
 
-},[]);
+fetchDoctors()
+
+},[])
 
 
 
-const saveProfile=async()=>{
+const saveProfile=
+async()=>{
 
 await axios.post(
+
 'http://localhost:5000/api/profile/save',
+
 {
 userEmail,
 ...profile
 }
-);
 
-alert(
-'Profile saved'
-);
+)
 
-};
+setEditing(false)
 
+}
 
 
-const book=async()=>{
+
+const book=
+async()=>{
 
 await axios.post(
+
 'http://localhost:5000/api/appointments/book',
+
 {
 
 patientId:userEmail,
@@ -116,11 +175,12 @@ appointmentDate,
 appointmentTime
 
 }
-);
 
-fetchAppointments();
+)
 
-};
+fetchAppointments()
+
+}
 
 
 
@@ -128,21 +188,74 @@ return(
 
 <div>
 
-<h1>User Dashboard</h1>
+<h1>
+User Dashboard
+</h1>
 
 <button
-onClick={()=>setView('landing')}
+onClick={()=>setView(
+'landing'
+)}
 >
 Logout
 </button>
 
 
 
-<h2>My Profile</h2>
+<h2>
+My Profile
+</h2>
+
+
+
+{
+!editing
+&&
+(
+<div>
+
+<p>
+Name:
+{profile.name}
+</p>
+
+<p>
+Age:
+{profile.age}
+</p>
+
+<p>
+Gender:
+{profile.gender}
+</p>
+
+<p>
+Phone:
+{profile.phone}
+</p>
+
+<button
+onClick={()=>setEditing(
+true
+)}
+>
+Edit Profile
+</button>
+
+</div>
+)
+}
+
+
+
+{
+editing
+&&
+(
+<div>
 
 <input
-placeholder='Name'
-value={profile.name}
+value={profile.name||''}
 onChange={(e)=>
 setProfile({
 ...profile,
@@ -152,8 +265,7 @@ name:e.target.value
 />
 
 <input
-placeholder='Age'
-value={profile.age}
+value={profile.age||''}
 onChange={(e)=>
 setProfile({
 ...profile,
@@ -163,8 +275,7 @@ age:e.target.value
 />
 
 <input
-placeholder='Gender'
-value={profile.gender}
+value={profile.gender||''}
 onChange={(e)=>
 setProfile({
 ...profile,
@@ -174,19 +285,7 @@ gender:e.target.value
 />
 
 <input
-placeholder='Blood Group'
-value={profile.bloodGroup}
-onChange={(e)=>
-setProfile({
-...profile,
-bloodGroup:e.target.value
-})
-}
-/>
-
-<input
-placeholder='Phone'
-value={profile.phone}
+value={profile.phone||''}
 onChange={(e)=>
 setProfile({
 ...profile,
@@ -195,65 +294,78 @@ phone:e.target.value
 }
 />
 
-<input
-placeholder='Address'
-value={profile.address}
-onChange={(e)=>
-setProfile({
-...profile,
-address:e.target.value
-})
-}
-/>
-
-<input
-placeholder='Allergies'
-value={profile.allergies}
-onChange={(e)=>
-setProfile({
-...profile,
-allergies:e.target.value
-})
-}
-/>
-
 <button onClick={saveProfile}>
-Save Profile
+Save
 </button>
 
+<button
+onClick={()=>setEditing(
+false
+)}
+>
+Cancel
+</button>
+
+</div>
+)
+}
 
 
-<h2>Book Appointment</h2>
+
+<h2>
+Book Appointment
+</h2>
 
 <select
 onChange={(e)=>{
 
-if(e.target.value==='doc1'){
+const d=
+doctors.find(
+x=>
+x._id===
+e.target.value
+)
 
-setDoctorId('doc1');
-setDoctorName('Dr Sharma');
-setSpecialization('Cardiology');
+if(d){
 
-}
+setDoctorId(
+d._id
+)
 
-if(e.target.value==='doc2'){
+setDoctorName(
+d.name
+)
 
-setDoctorId('doc2');
-setDoctorName('Dr Mehta');
-setSpecialization('Dermatology');
+setSpecialization(
+d.specialization
+)
 
 }
 
 }}
 >
 
-<option value='doc1'>
-Dr Sharma - Cardiology
+<option value=''>
+Select Approved Doctor
 </option>
 
-<option value='doc2'>
-Dr Mehta - Dermatology
+
+{doctors.map((d)=>(
+
+<option
+key={d._id}
+value={d._id}
+>
+
+{d.name}
+
+-
+
+{d.specialization}
+
 </option>
+
+))}
 
 </select>
 
@@ -283,17 +395,15 @@ Book
 
 
 
-<h2>Appointment History</h2>
+<h2>
+Appointment History
+</h2>
 
 {appointments.map((a)=>(
 
 <p key={a._id}>
 
 {a.doctorName}
-
-|
-
-{a.specialization}
 
 |
 

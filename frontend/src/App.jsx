@@ -19,6 +19,9 @@ from './components/DoctorDashboard'
 import AdminDashboard
 from './components/AdminDashboard'
 
+import PatientRegister
+from './components/PatientRegister'
+
 
 
 export default function App(){
@@ -88,6 +91,14 @@ setView={setView}
 view==='adminDashboard'
 &&
 <AdminDashboard
+setView={setView}
+/>
+}
+
+{
+view==='patientRegister'
+&&
+<PatientRegister
 setView={setView}
 />
 }
