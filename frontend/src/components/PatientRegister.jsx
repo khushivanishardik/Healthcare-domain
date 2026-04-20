@@ -12,10 +12,6 @@ const API=
 'https://healthcare-domain.onrender.com'
 
 
-
-const [username,setUsername]=
-useState('')
-
 const [email,setEmail]=
 useState('')
 
@@ -41,7 +37,6 @@ await axios.post(
 API+'/api/auth/register',
 
 {
-username,
 email,
 password
 }
@@ -67,7 +62,7 @@ setMessage(
 
 err?.response?.data?.message ||
 
-'Patient registration failed'
+'Registration failed'
 
 )
 
@@ -84,20 +79,6 @@ return(
 <h2>
 Patient Register
 </h2>
-
-
-<label>
-Username
-</label>
-
-<input
-placeholder='Enter Username'
-value={username}
-onChange={(e)=>
-setUsername(
-e.target.value
-)}
-/>
 
 
 <label>

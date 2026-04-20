@@ -17,7 +17,6 @@ async(req,res)=>{
 try{
 
 const {
-username,
 email,
 password
 }=req.body;
@@ -25,7 +24,6 @@ password
 
 
 if(
-!username ||
 !email ||
 !password
 ){
@@ -63,8 +61,6 @@ password,
 
 
 await User.create({
-
-username,
 
 email,
 
@@ -162,10 +158,7 @@ res.json({
 message:
 'Login successful',
 
-token,
-
-username:
-user.username
+token
 
 });
 
