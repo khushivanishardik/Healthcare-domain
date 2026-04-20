@@ -195,6 +195,22 @@ message:'Server error'
 
 });
 
+router.get(
+'/profile/:email',
+async(req,res)=>{
 
+const doctor=
+await Doctor.findOne({
+
+email:
+req.params.email
+
+});
+
+res.json(
+doctor
+);
+
+});
 
 module.exports = router;

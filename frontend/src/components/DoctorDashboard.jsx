@@ -1,17 +1,52 @@
-import {useEffect,useState} from 'react';
+import {useEffect,useState}
+from 'react'
 
-import axios from 'axios';
+import axios
+from 'axios'
 
 
 
 export default function DoctorDashboard({setView}){
 
-const doctorName='Dr Sharma';
+const API=
+'https://healthcare-domain.onrender.com'
 
+
+const doctorEmail=
+'doctor@gmail.com'
+/*
+Replace later with
+logged-in doctor email
+*/
+
+
+const [doctor,setDoctor]=
+useState({})
 
 const [appointments,
 setAppointments]=
 useState([])
+
+
+
+const fetchDoctor=
+async()=>{
+
+const res=
+await axios.get(
+
+API+
+'/api/doctor-auth/profile/'
++
+doctorEmail
+
+)
+
+setDoctor(
+res.data
+)
+
+}
 
 
 
@@ -20,8 +55,12 @@ async()=>{
 
 const res=
 await axios.get(
-'https://healthcare-domain.onrender.com/api/appointments/all'
+
+API+
+'/api/appointments/all'
+
 )
+
 
 
 setAppointments(
@@ -29,8 +68,10 @@ setAppointments(
 res.data.filter(
 
 a=>
-a.doctorName===
-doctorName
+
+a.doctorId===
+
+doctor._id
 
 )
 
@@ -42,9 +83,23 @@ doctorName
 
 useEffect(()=>{
 
-fetchAppointments()
+fetchDoctor()
 
 },[])
+
+
+
+useEffect(()=>{
+
+if(
+doctor._id
+){
+
+fetchAppointments()
+
+}
+
+},[doctor])
 
 
 
@@ -53,7 +108,10 @@ async(id,status)=>{
 
 await axios.put(
 
-'https://healthcare-domain.onrender.com/api/appointments/update/'+id,
+API+
+'/api/appointments/update/'
++
+id,
 
 {
 status
@@ -75,6 +133,7 @@ return(
 Doctor Dashboard
 </h1>
 
+
 <button
 onClick={()=>setView(
 'landing'
@@ -82,6 +141,29 @@ onClick={()=>setView(
 >
 Logout
 </button>
+
+
+<hr/>
+
+
+<h2>
+Personal Details
+</h2>
+
+<p>
+
+Name:
+{doctor.name}
+
+</p>
+
+<p>
+
+Specialization:
+{doctor.specialization}
+
+</p>
+
 
 <hr/>
 
@@ -121,7 +203,7 @@ Status:
 
 
 {
-item.status==="Pending"
+item.status==='Pending'
 &&
 (
 <>
@@ -136,7 +218,7 @@ item._id,
 }
 
 >
-Accept
+Confirm
 </button>
 
 
@@ -151,21 +233,19 @@ item._id,
 }
 
 >
-Reject
+Decline
 </button>
 
 </>
-
 )
 }
 
 
 
 {
-item.status==="Accepted"
+item.status==='Accepted'
 &&
 (
-
 <button
 
 onClick={()=>
@@ -178,17 +258,15 @@ item._id,
 >
 Complete
 </button>
-
 )
 }
 
 
 
 {
-item.status==="Completed"
+item.status==='Completed'
 &&
 (
-
 <div>
 
 Completed ✔
@@ -202,23 +280,18 @@ item.completedAt
 }
 
 </div>
-
 )
 }
 
 
 
 {
-item.status==="Rejected"
+item.status==='Rejected'
 &&
 (
-
 <div>
-
-Rejected
-
+Declined
 </div>
-
 )
 }
 
@@ -228,6 +301,18 @@ Rejected
 </div>
 
 ))}
+
+
+
+{
+appointments.length===0
+&&
+(
+<p>
+No Appointments
+</p>
+)
+}
 
 </div>
 
