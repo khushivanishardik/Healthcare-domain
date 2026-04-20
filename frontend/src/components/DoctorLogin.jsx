@@ -19,14 +19,21 @@ useState('')
 const [password,setPassword]=
 useState('')
 
+const [message,setMessage]=
+useState('')
+
 
 
 const login=
 async()=>{
 
+try{
+
+const res=
 await axios.post(
 
-API+'/api/doctor-auth/login',
+API+
+'/api/doctor-auth/login',
 
 {
 email,
@@ -43,6 +50,20 @@ setView(
 'doctorDashboard'
 )
 
+}catch(err){
+
+setMessage(
+
+err?.response?.data?.message
+
+||
+
+'Doctor login failed'
+
+)
+
+}
+
 }
 
 
@@ -51,28 +72,50 @@ return(
 
 <div>
 
-<h2>Doctor Login</h2>
+<h2>
+Doctor Login
+</h2>
+
 
 <input
-placeholder='Email'
+placeholder='Doctor Email'
 value={email}
 onChange={(e)=>
-setEmail(e.target.value)
-}
+setEmail(
+e.target.value
+)}
 />
+
 
 <input
 type='password'
 placeholder='Password'
 value={password}
 onChange={(e)=>
-setPassword(e.target.value)
-}
+setPassword(
+e.target.value
+)}
 />
+
 
 <button onClick={login}>
 Login
 </button>
+
+
+<button
+onClick={()=>setView(
+'landing'
+)}
+style={{
+marginLeft:'10px'
+}}
+>
+Go Back Home
+</button>
+
+
+<p>{message}</p>
 
 </div>
 
