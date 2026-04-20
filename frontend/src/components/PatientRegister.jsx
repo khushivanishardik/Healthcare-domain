@@ -5,9 +5,15 @@ import axios
 from 'axios'
 
 
+
 export default function PatientRegister({setView}){
 
-const [name,setName]=
+const API=
+'https://healthcare-domain.onrender.com'
+
+
+
+const [username,setUsername]=
 useState('')
 
 const [email,setEmail]=
@@ -19,6 +25,9 @@ useState('')
 const [message,setMessage]=
 useState('')
 
+const [isSuccess,setIsSuccess]=
+useState(false)
+
 
 
 const register=
@@ -29,24 +38,37 @@ try{
 const res=
 await axios.post(
 
-'https://healthcare-domain.onrender.com/api/patient-auth/register',
+API+'/api/auth/register',
 
 {
-name,
+username,
 email,
 password
 }
 
 )
 
+setIsSuccess(
+true
+)
+
 setMessage(
 res.data.message
 )
 
+
 }catch(err){
 
+setIsSuccess(
+false
+)
+
 setMessage(
-'Registration failed'
+
+err?.response?.data?.message ||
+
+'Patient registration failed'
+
 )
 
 }
@@ -63,17 +85,27 @@ return(
 Patient Register
 </h2>
 
+
+<label>
+Username
+</label>
+
 <input
-placeholder='Name'
-value={name}
+placeholder='Enter Username'
+value={username}
 onChange={(e)=>
-setName(
+setUsername(
 e.target.value
 )}
 />
 
+
+<label>
+Email
+</label>
+
 <input
-placeholder='Email'
+placeholder='Enter Email'
 value={email}
 onChange={(e)=>
 setEmail(
@@ -81,9 +113,14 @@ e.target.value
 )}
 />
 
+
+<label>
+Password
+</label>
+
 <input
 type='password'
-placeholder='Password'
+placeholder='Enter Password'
 value={password}
 onChange={(e)=>
 setPassword(
@@ -91,9 +128,11 @@ e.target.value
 )}
 />
 
+
 <button onClick={register}>
 Register
 </button>
+
 
 <button
 onClick={()=>setView(
@@ -103,7 +142,28 @@ onClick={()=>setView(
 Go To Login
 </button>
 
-<p>{message}</p>
+
+
+{
+message &&
+(
+<div>
+
+{
+isSuccess
+?
+
+'✅ '+message
+
+:
+
+'❌ '+message
+
+}
+
+</div>
+)
+}
 
 </div>
 
