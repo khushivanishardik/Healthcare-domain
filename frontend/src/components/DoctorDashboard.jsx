@@ -1,58 +1,64 @@
-import {useEffect,useState} from 'react'
-import axios from 'axios'
+import {useEffect,useState}
+from 'react'
+
+import axios
+from 'axios'
+
+import '../App.css'
+
+
 
 export default function DoctorDashboard({
 setView,
 currentDoctorEmail
 }){
 
-const API='https://healthcare-domain.onrender.com'
+const API=
+'https://healthcare-domain.onrender.com'
 
-const doctorEmail=currentDoctorEmail
+const [doctor,setDoctor]=
+useState(null)
+
+const [appointments,
+setAppointments]=
+useState([])
 
 
-const [doctor,setDoctor]=useState(null)
 
-const [appointments,setAppointments]=useState([])
+const fetchDoctor=
+async()=>{
 
-
-
-const fetchDoctor=async()=>{
-
-try{
-
-const res=
+const r=
 await axios.get(
-API+'/api/doctor-auth/profile/'+doctorEmail
+
+API+
+'/api/doctor-auth/profile/'
++
+currentDoctorEmail
+
 )
 
-if(res.data){
-setDoctor(res.data)
-}
-
-}catch(err){
-console.log(err)
-}
+setDoctor(
+r.data
+)
 
 }
 
 
 
-const fetchAppointments=async()=>{
+const fetchAppointments=
+async(id)=>{
 
-if(!doctor?._id){
-return
-}
-
-const res=
+const r=
 await axios.get(
-API+'/api/appointments/all'
+API+
+'/api/appointments/all'
 )
 
 setAppointments(
 
-res.data.filter(
-a=>a.doctorId===doctor._id
+r.data.filter(
+a=>a.doctorId===id
 )
 
 )
@@ -70,7 +76,11 @@ fetchDoctor()
 useEffect(()=>{
 
 if(doctor?._id){
-fetchAppointments()
+
+fetchAppointments(
+doctor._id
+)
+
 }
 
 },[doctor])
@@ -93,7 +103,9 @@ status
 
 )
 
-fetchAppointments()
+fetchAppointments(
+doctor._id
+)
 
 }
 
@@ -102,8 +114,10 @@ fetchAppointments()
 if(!doctor){
 
 return(
-<div>
-Loading Doctor Dashboard...
+<div className='page'>
+<div className='card'>
+Loading...
+</div>
 </div>
 )
 
@@ -113,24 +127,32 @@ Loading Doctor Dashboard...
 
 return(
 
-<div>
+<div className='page'>
+
+<div className='card'>
+
+<div className='nav-top'>
 
 <h1>
 Doctor Dashboard
 </h1>
 
 <button
-onClick={()=>setView('landing')}
+onClick={()=>setView(
+'landing'
+)}
 >
 Logout
 </button>
 
+</div>
 
-<hr/>
 
+
+<div className='card'>
 
 <h2>
-Personal Details
+Doctor Profile
 </h2>
 
 <p>
@@ -143,46 +165,40 @@ Specialization:
 {doctor.specialization}
 </p>
 
+</div>
 
-<hr/>
 
+
+<div className='card'>
 
 <h2>
-My Appointments
+Appointments
 </h2>
-
-
-{appointments.length===0 && (
-<p>No Appointments</p>
-)}
-
-
 
 {appointments.map((item)=>(
 
-<div key={item._id}>
+<div
+className='appointment-item'
+key={item._id}
+>
 
 <p>
 
-Patient:
 {item.patientName}
 
 |
 
-Date:
 {item.appointmentDate}
 
 |
 
-Time:
 {item.appointmentTime}
 
-|
-
-Status:
-{item.status}
-
 </p>
+
+<span className='badge'>
+{item.status}
+</span>
 
 
 
@@ -202,7 +218,6 @@ item._id,
 >
 Confirm
 </button>
-
 
 
 <button
@@ -245,11 +260,7 @@ Complete
 item.status==='Completed'
 &&
 (
-<div>
-
-Completed ✔
-
-<br/>
+<p>
 
 {
 new Date(
@@ -257,28 +268,17 @@ item.completedAt
 ).toLocaleString()
 }
 
-</div>
+</p>
 )
 }
-
-
-
-{
-item.status==='Rejected'
-&&
-(
-<div>
-Declined
-</div>
-)
-}
-
-
-<hr/>
 
 </div>
 
 ))}
+
+</div>
+
+</div>
 
 </div>
 

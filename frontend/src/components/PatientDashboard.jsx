@@ -4,63 +4,91 @@ from 'react'
 import axios
 from 'axios'
 
+import '../App.css'
+
+
+
 export default function PatientDashboard({
 setView,
 currentUserEmail
 }){
 
-const API =
+const API=
 'https://healthcare-domain.onrender.com'
 
-const userEmail=currentUserEmail
+const userEmail=
+currentUserEmail
 
-const [editing,setEditing]=useState(false)
+const [editing,setEditing]=
+useState(false)
 
-const [profile,setProfile]=useState({
+const [profile,setProfile]=
+useState({
 name:'',
 age:'',
 gender:'',
 phone:''
 })
 
-const [appointments,setAppointments]=useState([])
+const [appointments,
+setAppointments]=
+useState([])
 
-const [doctors,setDoctors]=useState([])
+const [doctors,
+setDoctors]=
+useState([])
 
-const [doctorId,setDoctorId]=useState('')
-const [doctorName,setDoctorName]=useState('')
-const [specialization,setSpecialization]=useState('')
+const [doctorId,setDoctorId]=
+useState('')
 
-const [appointmentDate,setAppointmentDate]=useState('')
-const [appointmentTime,setAppointmentTime]=useState('')
+const [doctorName,setDoctorName]=
+useState('')
+
+const [specialization,
+setSpecialization]=
+useState('')
+
+const [appointmentDate,
+setAppointmentDate]=
+useState('')
+
+const [appointmentTime,
+setAppointmentTime]=
+useState('')
 
 
 
-const fetchProfile=async()=>{
+const fetchProfile=
+async()=>{
 
-const res=
+const r=
 await axios.get(
-API+'/api/profile/one/'+userEmail
+API+
+'/api/profile/one/'
++
+userEmail
 )
 
-if(res.data){
-setProfile(res.data)
+if(r.data){
+setProfile(r.data)
 }
 
 }
 
 
 
-const fetchAppointments=async()=>{
+const fetchAppointments=
+async()=>{
 
-const res=
+const r=
 await axios.get(
-API+'/api/appointments/all'
+API+
+'/api/appointments/all'
 )
 
 setAppointments(
 
-res.data.filter(
+r.data.filter(
 a=>a.patientId===userEmail
 )
 
@@ -70,15 +98,17 @@ a=>a.patientId===userEmail
 
 
 
-const fetchDoctors=async()=>{
+const fetchDoctors=
+async()=>{
 
-const res=
+const r=
 await axios.get(
-API+'/api/admin/approved-doctors'
+API+
+'/api/admin/approved-doctors'
 )
 
 setDoctors(
-res.data
+r.data
 )
 
 }
@@ -97,11 +127,13 @@ fetchDoctors()
 
 
 
-const saveProfile=async()=>{
+const saveProfile=
+async()=>{
 
 await axios.post(
 
-API+'/api/profile/save',
+API+
+'/api/profile/save',
 
 {
 userEmail,
@@ -116,29 +148,22 @@ setEditing(false)
 
 
 
-const book=async()=>{
+const book=
+async()=>{
 
 await axios.post(
 
-API+'/api/appointments/book',
+API+
+'/api/appointments/book',
 
 {
-
 patientId:userEmail,
-
-patientName:
-profile.name,
-
+patientName:profile.name,
 doctorId,
-
 doctorName,
-
 specialization,
-
 appointmentDate,
-
 appointmentTime
-
 }
 
 )
@@ -151,31 +176,47 @@ fetchAppointments()
 
 return(
 
-<div>
+<div className='page'>
 
-<h1>Patient Dashboard</h1>
+<div className='card'>
+
+<div className='nav-top'>
+
+<h1>
+Patient Dashboard
+</h1>
 
 <button
-onClick={()=>setView('landing')}
+onClick={()=>setView(
+'landing'
+)}
 >
 Logout
 </button>
 
-<hr/>
+</div>
 
-<h2>Personal Details</h2>
 
-{!editing && (
+
+<div className='card'>
+
+<h2>
+Personal Details
+</h2>
+
+{
+!editing
+?
 
 <div>
 
-<p>Name: {profile.name||'Not set'}</p>
+<p>Name: {profile.name}</p>
 
-<p>Age: {profile.age||'Not set'}</p>
+<p>Age: {profile.age}</p>
 
-<p>Gender: {profile.gender||'Not set'}</p>
+<p>Gender: {profile.gender}</p>
 
-<p>Phone: {profile.phone||'Not set'}</p>
+<p>Phone: {profile.phone}</p>
 
 <button
 onClick={()=>setEditing(true)}
@@ -185,18 +226,15 @@ Edit Profile
 
 </div>
 
-)}
+:
 
-
-
-{editing && (
+<div className='row'>
 
 <div>
 
 <label>Name</label>
 
 <input
-placeholder='Enter Full Name'
 value={profile.name||''}
 onChange={(e)=>
 setProfile({
@@ -209,7 +247,6 @@ name:e.target.value
 <label>Age</label>
 
 <input
-placeholder='Enter Age'
 value={profile.age||''}
 onChange={(e)=>
 setProfile({
@@ -219,10 +256,14 @@ age:e.target.value
 }
 />
 
+</div>
+
+
+<div>
+
 <label>Gender</label>
 
 <input
-placeholder='Enter Gender'
 value={profile.gender||''}
 onChange={(e)=>
 setProfile({
@@ -235,7 +276,6 @@ gender:e.target.value
 <label>Phone</label>
 
 <input
-placeholder='Enter Phone'
 value={profile.phone||''}
 onChange={(e)=>
 setProfile({
@@ -245,23 +285,27 @@ phone:e.target.value
 }
 />
 
+</div>
+
+
 <button onClick={saveProfile}>
 Save
 </button>
 
-<button
-onClick={()=>setEditing(false)}
->
-Cancel
-</button>
+</div>
+
+}
 
 </div>
 
-)}
 
-<hr/>
 
-<h2>Book Appointment</h2>
+<div className='card'>
+
+<h2>
+Book Appointment
+</h2>
+
 
 <select
 onChange={(e)=>{
@@ -274,8 +318,12 @@ x=>x._id===e.target.value
 if(d){
 
 setDoctorId(d._id)
+
 setDoctorName(d.name)
-setSpecialization(d.specialization)
+
+setSpecialization(
+d.specialization
+)
 
 }
 
@@ -292,14 +340,19 @@ Select Approved Doctor
 key={d._id}
 value={d._id}
 >
-{d.name} - {d.specialization}
+
+{d.name}
+
+-
+
+{d.specialization}
+
 </option>
 
 ))}
 
 </select>
 
-<br/><br/>
 
 <input
 type='date'
@@ -310,7 +363,6 @@ e.target.value
 )}
 />
 
-<br/><br/>
 
 <input
 type='time'
@@ -321,19 +373,27 @@ e.target.value
 )}
 />
 
-<br/><br/>
 
 <button onClick={book}>
 Book Appointment
 </button>
 
-<hr/>
+</div>
 
-<h2>Appointment History</h2>
+
+
+<div className='card'>
+
+<h2>
+Appointment History
+</h2>
 
 {appointments.map((a)=>(
 
-<p key={a._id}>
+<div
+className='appointment-item'
+key={a._id}
+>
 
 {a.doctorName}
 
@@ -345,13 +405,19 @@ Book Appointment
 
 {a.appointmentTime}
 
-|
+<span className='badge'>
 
 {a.status}
 
-</p>
+</span>
+
+</div>
 
 ))}
+
+</div>
+
+</div>
 
 </div>
 

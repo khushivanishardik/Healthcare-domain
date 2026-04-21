@@ -1,11 +1,17 @@
 import {useEffect,useState}
 from 'react'
 
-import axios from 'axios'
+import axios
+from 'axios'
+
+import '../App.css'
 
 
 
 export default function AdminDashboard({setView}){
+
+const API=
+'https://healthcare-domain.onrender.com'
 
 const [doctors,
 setDoctors]=
@@ -13,18 +19,19 @@ useState([])
 
 
 
-const fetchPendingDoctors=
+const fetchPending=
 async()=>{
 
-const res=
+const r=
 await axios.get(
 
-'https://healthcare-domain.onrender.com/api/admin/pending-doctors'
+API+
+'/api/admin/pending-doctors'
 
 )
 
 setDoctors(
-res.data
+r.data
 )
 
 }
@@ -32,23 +39,24 @@ res.data
 
 
 useEffect(()=>{
-
-fetchPendingDoctors()
-
+fetchPending()
 },[])
 
 
 
-const approveDoctor=
+const approve=
 async(id)=>{
 
 await axios.put(
 
-'https://healthcare-domain.onrender.com/api/admin/approve/'+id
+API+
+'/api/admin/approve/'
++
+id
 
 )
 
-fetchPendingDoctors()
+fetchPending()
 
 }
 
@@ -56,7 +64,11 @@ fetchPendingDoctors()
 
 return(
 
-<div>
+<div className='page'>
+
+<div className='card'>
+
+<div className='nav-top'>
 
 <h1>
 Admin Dashboard
@@ -70,56 +82,42 @@ onClick={()=>setView(
 Logout
 </button>
 
-<hr/>
+</div>
 
+
+
+<div className='card'>
 
 <h2>
 Pending Doctor Applications
 </h2>
 
-
-
 {doctors.map((doc)=>(
 
-<div key={doc._id}>
+<div
+className='appointment-item'
+key={doc._id}
+>
 
 <p>
 
-Name:
 {doc.name}
 
 |
 
-Email:
-{doc.email}
-
-|
-
-Specialization:
 {doc.specialization}
-
-|
-
-Status:
-{doc.status}
 
 </p>
 
-
 <button
-
 onClick={()=>
-approveDoctor(
+approve(
 doc._id
 )
 }
-
 >
 Approve
 </button>
-
-
-<hr/>
 
 </div>
 
@@ -136,6 +134,10 @@ No Pending Doctors
 </p>
 )
 }
+
+</div>
+
+</div>
 
 </div>
 

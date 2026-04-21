@@ -1,44 +1,57 @@
+import '../App.css'
+
 export default function Landing({setView}){
 
 return(
 
-<div>
+<div className='page'>
 
-<h1>
-Healthcare System
+<div className='card hero'>
+
+<h1  align='center'>
+Healthcare Management Portal
 </h1>
 
-<button
+<p>
+Patients, Doctors and Admin
+in one secure workflow.
+</p>
+
+
+<div className='role-grid'>
+
+<button align='center'
+className='primary'
 onClick={()=>setView(
 'patientRegister'
 )}
 >
-Patient
+Patient Portal
 </button>
 
 
-<button
+<button align='center'
+className='secondary'
 onClick={()=>setView(
 'doctorRegister'
 )}
-style={{
-marginLeft:'10px'
-}}
 >
-Doctor
+Doctor Portal
 </button>
 
 
-<button
+<button align='center'
+className='ghost'
 onClick={()=>setView(
 'adminDashboard'
 )}
-style={{
-marginLeft:'10px'
-}}
 >
-Admin
+Admin Portal
 </button>
+
+</div>
+
+</div>
 
 </div>
 
