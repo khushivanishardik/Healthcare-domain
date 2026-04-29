@@ -8,36 +8,74 @@ return(
 
 <div className='card'>
 
-<h1>
-🏥 Healthcare Management Portal
-</h1>
+<h1>🏥 Healthcare Management Portal</h1>
 
 <p className='subtitle'>
-A smart system for Patients, Doctors and Admin — fast, secure and modern.
+Patients, Doctors and Admin — secure and modern system
 </p>
 
-<div className='role-buttons'>
+<div className='role-container'>
 
+<div className='role-card'>
+
+<h3>👤 Patient</h3>
+
+<div className='role-actions'>
 <button
-className='role-btn patient'
+className='primary'
 onClick={()=>setView('patientLogin')}
 >
-👤 Patient Portal
+Login
 </button>
 
 <button
-className='role-btn doctor'
+className='outline'
+onClick={()=>setView('patientRegister')}
+>
+Register
+</button>
+</div>
+
+</div>
+
+
+<div className='role-card'>
+
+<h3>🩺 Doctor</h3>
+
+<div className='role-actions'>
+<button
+className='primary'
 onClick={()=>setView('doctorLogin')}
 >
-🩺 Doctor Portal
+Login
 </button>
 
 <button
-className='role-btn admin'
+className='outline'
+onClick={()=>setView('doctorRegister')}
+>
+Apply
+</button>
+</div>
+
+</div>
+
+
+<div className='role-card'>
+
+<h3>⚙️ Admin</h3>
+
+<div className='role-actions'>
+<button
+className='primary'
 onClick={()=>setView('adminDashboard')}
 >
-⚙️ Admin Portal
+Open
 </button>
+</div>
+
+</div>
 
 </div>
 

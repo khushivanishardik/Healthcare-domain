@@ -1,117 +1,53 @@
-body{
-font-family:'Inter',sans-serif;
-background:linear-gradient(135deg,#0f172a,#1e293b);
-color:white;
-margin:0;
+.subtitle{
+color:#94a3b8;
+margin-bottom:30px;
+font-size:16px;
 }
 
-.page{
-min-height:100vh;
-padding:30px;
-}
+/* ROLE LAYOUT */
 
-.container{
-max-width:1100px;
-margin:auto;
-}
-
-.card{
-background:rgba(255,255,255,0.08);
-backdrop-filter:blur(20px);
-border-radius:20px;
-padding:24px;
-margin-bottom:20px;
-border:1px solid rgba(255,255,255,0.1);
-box-shadow:0 10px 40px rgba(0,0,0,0.3);
-}
-
-.nav{
+.role-container{
 display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:20px;
+justify-content:center;
+gap:30px;
+flex-wrap:wrap;
+margin-top:30px;
 }
 
-h1{
-font-size:28px;
-font-weight:700;
+.role-card{
+background:rgba(255,255,255,0.05);
+padding:20px;
+border-radius:16px;
+width:180px;
+text-align:center;
+transition:0.3s;
+border:1px solid rgba(255,255,255,0.1);
 }
 
-h2{
-margin-bottom:12px;
-color:#cbd5f5;
+.role-card:hover{
+transform:translateY(-4px);
+box-shadow:0 10px 30px rgba(0,0,0,0.3);
 }
 
-button{
-border:none;
-padding:10px 16px;
-border-radius:10px;
-cursor:pointer;
-font-weight:600;
-transition:0.2s;
+.role-card h3{
+margin-bottom:15px;
 }
 
-button:hover{
-transform:scale(1.05);
+.role-actions{
+display:flex;
+flex-direction:column;
+gap:10px;
 }
 
-/* colors */
+/* BUTTONS */
 
-.primary{
+.outline{
+background:transparent;
+border:1px solid #3b82f6;
+color:#3b82f6;
+}
+
+.outline:hover{
 background:#3b82f6;
 color:white;
-}
-
-.success{
-background:#10b981;
-color:white;
-}
-
-.danger{
-background:#ef4444;
-color:white;
-}
-
-.logout{
-background:#111827;
-color:white;
-}
-
-/* inputs */
-
-input,select{
-width:100%;
-padding:10px;
-border-radius:10px;
-border:none;
-margin-bottom:10px;
-background:#1e293b;
-color:white;
-}
-
-/* appointment card */
-
-.item{
-background:#1e293b;
-padding:12px;
-border-radius:12px;
-margin-bottom:10px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-flex-wrap:wrap;
-}
-
-.badge{
-background:#334155;
-padding:4px 10px;
-border-radius:20px;
-font-size:12px;
-margin-left:8px;
-}
-
-.actions{
-margin-top:8px;
-display:flex;
-gap:10px;
 }
