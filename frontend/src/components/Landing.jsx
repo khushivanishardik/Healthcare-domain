@@ -8,7 +8,7 @@ return(
 
 <div className='card'>
 
-<h1>🏥 Healthcare Management Portal</h1>
+<h1 align='center'>🏥 Healthcare Management Portal</h1>
 
 <p className='subtitle'>
 Patients, Doctors and Admin — secure and modern system

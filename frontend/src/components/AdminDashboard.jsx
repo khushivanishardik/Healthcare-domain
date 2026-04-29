@@ -8,9 +8,7 @@ const API='https://healthcare-domain.onrender.com'
 
 const [doctors,setDoctors]=useState([])
 
-useEffect(()=>{
-load()
-},[])
+useEffect(()=>{load()},[])
 
 const load=async()=>{
 const r=await axios.get(API+'/api/admin/pending-doctors')
@@ -23,23 +21,23 @@ load()
 }
 
 return(
-<div className='page'>
-<div className='container'>
+<div className='dashboard'>
 
-<div className='nav'>
-<h1>⚙️ Admin Dashboard</h1>
-<button className='logout' onClick={()=>setView('landing')}>Logout</button>
+<div className='navbar'>
+<h1 className='title'>⚙️ Admin Dashboard</h1>
+<button className='logout' onClick={()=>setView('landing')}>
+Logout
+</button>
 </div>
 
-<div className='card'>
+<div className='section'>
 <h2>Pending Doctors</h2>
 
 {doctors.map(d=>(
 <div className='item' key={d._id}>
 
 <div>
-<b>{d.name}</b>
-<br/>
+<b>{d.name}</b><br/>
 {d.specialization}
 </div>
 
@@ -54,7 +52,6 @@ Approve
 
 </div>
 
-</div>
 </div>
 )
 }

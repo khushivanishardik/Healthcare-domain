@@ -9,9 +9,7 @@ const API='https://healthcare-domain.onrender.com'
 const [doctor,setDoctor]=useState(null)
 const [appointments,setAppointments]=useState([])
 
-useEffect(()=>{
-load()
-},[])
+useEffect(()=>{load()},[])
 
 const load=async()=>{
 const d=await axios.get(API+'/api/doctor-auth/profile/'+currentDoctorEmail)
@@ -26,34 +24,33 @@ await axios.put(API+'/api/appointments/update/'+id,{status})
 load()
 }
 
-if(!doctor) return <div className='page'>Loading...</div>
+if(!doctor) return <div className='dashboard'>Loading...</div>
 
 return(
-<div className='page'>
-<div className='container'>
+<div className='dashboard'>
 
-<div className='nav'>
-<h1>🩺 Doctor Dashboard</h1>
-<button className='logout' onClick={()=>setView('landing')}>Logout</button>
+<div className='navbar'>
+<h1 className='title'>🩺 Doctor Dashboard</h1>
+<button className='logout' onClick={()=>setView('landing')}>
+Logout
+</button>
 </div>
 
-<div className='card'>
+<div className='section'>
 <h2>Profile</h2>
 <p>{doctor.name}</p>
 <p>{doctor.specialization}</p>
 </div>
 
-<div className='card'>
+<div className='section'>
 <h2>Appointments</h2>
 
 {appointments.map(a=>(
 <div className='item' key={a._id}>
 
 <div>
-<b>{a.patientName}</b>
-<br/>
+<b>{a.patientName}</b><br/>
 {a.appointmentDate} | {a.appointmentTime}
-<span className='badge'>{a.status}</span>
 </div>
 
 <div className='actions'>
@@ -76,7 +73,6 @@ return(
 
 </div>
 
-</div>
 </div>
 )
 }
