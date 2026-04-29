@@ -9,99 +9,74 @@ const API='https://healthcare-domain.onrender.com'
 const [doctor,setDoctor]=useState(null)
 const [appointments,setAppointments]=useState([])
 
-const fetchDoctor=async()=>{
-const r=await axios.get(API+'/api/doctor-auth/profile/'+currentDoctorEmail)
-setDoctor(r.data)
-}
-
-const fetchAppointments=async(id)=>{
-const r=await axios.get(API+'/api/appointments/all')
-setAppointments(r.data.filter(a=>a.doctorId===id))
-}
-
-useEffect(()=>{fetchDoctor()},[])
-
 useEffect(()=>{
-if(doctor?._id){
-fetchAppointments(doctor._id)
-}
-},[doctor])
+load()
+},[])
 
-const updateStatus=async(id,status)=>{
+const load=async()=>{
+const d=await axios.get(API+'/api/doctor-auth/profile/'+currentDoctorEmail)
+setDoctor(d.data)
+
+const a=await axios.get(API+'/api/appointments/all')
+setAppointments(a.data.filter(x=>x.doctorId===d.data._id))
+}
+
+const update=async(id,status)=>{
 await axios.put(API+'/api/appointments/update/'+id,{status})
-fetchAppointments(doctor._id)
+load()
 }
 
-if(!doctor){
-return <div className='page'><div className='card'>Loading...</div></div>
-}
+if(!doctor) return <div className='page'>Loading...</div>
 
 return(
-
 <div className='page'>
+<div className='container'>
 
-<div className='card'>
-
-<div className='nav-top'>
-<h1>Doctor Dashboard</h1>
-<button className="logout" onClick={()=>setView('landing')}>
-Logout
-</button>
+<div className='nav'>
+<h1>🩺 Doctor Dashboard</h1>
+<button className='logout' onClick={()=>setView('landing')}>Logout</button>
 </div>
 
 <div className='card'>
-<h2>Doctor Profile</h2>
-<p><b>Name:</b> {doctor.name}</p>
-<p><b>Specialization:</b> {doctor.specialization}</p>
+<h2>Profile</h2>
+<p>{doctor.name}</p>
+<p>{doctor.specialization}</p>
 </div>
 
 <div className='card'>
 <h2>Appointments</h2>
 
-{appointments.map(item=>(
-
-<div className='appointment-item' key={item._id}>
+{appointments.map(a=>(
+<div className='item' key={a._id}>
 
 <div>
-<p><b>{item.patientName}</b></p>
-<p>{item.appointmentDate} | {item.appointmentTime}</p>
-<span className='badge'>{item.status}</span>
+<b>{a.patientName}</b>
+<br/>
+{a.appointmentDate} | {a.appointmentTime}
+<span className='badge'>{a.status}</span>
 </div>
 
-<div className="actions">
+<div className='actions'>
 
-{item.status==='Pending' && (
+{a.status==='Pending' && (
 <>
-<button className="success"
-onClick={()=>updateStatus(item._id,'Accepted')}>
-Confirm
-</button>
-
-<button className="danger"
-onClick={()=>updateStatus(item._id,'Rejected')}>
-Decline
-</button>
+<button className='success' onClick={()=>update(a._id,'Accepted')}>Accept</button>
+<button className='danger' onClick={()=>update(a._id,'Rejected')}>Reject</button>
 </>
 )}
 
-{item.status==='Accepted' && (
-<button className="primary"
-onClick={()=>updateStatus(item._id,'Completed')}>
-Complete
-</button>
+{a.status==='Accepted' && (
+<button className='primary' onClick={()=>update(a._id,'Completed')}>Complete</button>
 )}
 
 </div>
 
 </div>
-
 ))}
 
 </div>
 
 </div>
-
 </div>
-
 )
 }

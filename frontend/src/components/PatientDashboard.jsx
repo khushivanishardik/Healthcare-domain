@@ -6,8 +6,6 @@ export default function PatientDashboard({setView,currentUserEmail}){
 
 const API='https://healthcare-domain.onrender.com'
 
-const userEmail=currentUserEmail
-
 const [profile,setProfile]=useState({})
 const [appointments,setAppointments]=useState([])
 const [doctors,setDoctors]=useState([])
@@ -15,61 +13,48 @@ const [doctors,setDoctors]=useState([])
 const [doctorId,setDoctorId]=useState('')
 const [doctorName,setDoctorName]=useState('')
 const [specialization,setSpecialization]=useState('')
-
-const [appointmentDate,setAppointmentDate]=useState('')
-const [appointmentTime,setAppointmentTime]=useState('')
-
-const fetchProfile=async()=>{
-const r=await axios.get(API+'/api/profile/one/'+userEmail)
-setProfile(r.data||{})
-}
-
-const fetchAppointments=async()=>{
-const r=await axios.get(API+'/api/appointments/all')
-setAppointments(r.data.filter(a=>a.patientId===userEmail))
-}
-
-const fetchDoctors=async()=>{
-const r=await axios.get(API+'/api/admin/approved-doctors')
-setDoctors(r.data)
-}
+const [date,setDate]=useState('')
+const [time,setTime]=useState('')
 
 useEffect(()=>{
-fetchProfile()
-fetchAppointments()
-fetchDoctors()
+load()
 },[])
+
+const load=async()=>{
+const p=await axios.get(API+'/api/profile/one/'+currentUserEmail)
+setProfile(p.data||{})
+
+const a=await axios.get(API+'/api/appointments/all')
+setAppointments(a.data.filter(x=>x.patientId===currentUserEmail))
+
+const d=await axios.get(API+'/api/admin/approved-doctors')
+setDoctors(d.data)
+}
 
 const book=async()=>{
 await axios.post(API+'/api/appointments/book',{
-patientId:userEmail,
+patientId:currentUserEmail,
 patientName:profile.name,
-doctorId,
-doctorName,
-specialization,
-appointmentDate,
-appointmentTime
+doctorId,doctorName,specialization,
+appointmentDate:date,
+appointmentTime:time
 })
-fetchAppointments()
+load()
 }
 
 return(
-
 <div className='page'>
+<div className='container'>
 
-<div className='card'>
-
-<div className='nav-top'>
-<h1>Patient Dashboard</h1>
-<button className="logout" onClick={()=>setView('landing')}>
-Logout
-</button>
+<div className='nav'>
+<h1>👤 Patient Dashboard</h1>
+<button className='logout' onClick={()=>setView('landing')}>Logout</button>
 </div>
 
 <div className='card'>
 <h2>Personal Details</h2>
-<p><b>Name:</b> {profile.name}</p>
-<p><b>Phone:</b> {profile.phone}</p>
+<p>Name: {profile.name}</p>
+<p>Phone: {profile.phone}</p>
 </div>
 
 <div className='card'>
@@ -83,48 +68,42 @@ setDoctorName(d.name)
 setSpecialization(d.specialization)
 }
 }}>
-
 <option>Select Doctor</option>
-
-{doctors.map(d=>(
+{doctors.map(d=>
 <option key={d._id} value={d._id}>
 {d.name} - {d.specialization}
 </option>
-))}
-
+)}
 </select>
 
-<input type='date' onChange={(e)=>setAppointmentDate(e.target.value)} />
-<input type='time' onChange={(e)=>setAppointmentTime(e.target.value)} />
+<input type='date' onChange={(e)=>setDate(e.target.value)}/>
+<input type='time' onChange={(e)=>setTime(e.target.value)}/>
 
-<button className="primary" onClick={book}>
+<button className='primary' onClick={book}>
 Book Appointment
 </button>
 
 </div>
 
 <div className='card'>
-<h2>Appointment History</h2>
+<h2>Appointments</h2>
 
 {appointments.map(a=>(
-
-<div className='appointment-item' key={a._id}>
+<div className='item' key={a._id}>
 
 <div>
-<p><b>{a.doctorName}</b></p>
-<p>{a.appointmentDate} | {a.appointmentTime}</p>
+<b>{a.doctorName}</b>
+<br/>
+{a.appointmentDate} | {a.appointmentTime}
 <span className='badge'>{a.status}</span>
 </div>
 
 </div>
-
 ))}
 
 </div>
 
 </div>
-
 </div>
-
 )
 }

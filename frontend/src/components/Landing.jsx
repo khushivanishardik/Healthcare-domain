@@ -6,47 +6,37 @@ return(
 
 <div className='page'>
 
-<div className='card hero'>
+<div className='card'>
 
-<h1  align='center'>
-Healthcare Management Portal
+<h1>
+🏥 Healthcare Management Portal
 </h1>
 
-<p>
-Patients, Doctors and Admin
-in one secure workflow.
+<p className='subtitle'>
+A smart system for Patients, Doctors and Admin — fast, secure and modern.
 </p>
 
+<div className='role-buttons'>
 
-<div className='role-grid'>
-
-<button align='center'
-className='primary'
-onClick={()=>setView(
-'patientRegister'
-)}
+<button
+className='role-btn patient'
+onClick={()=>setView('patientLogin')}
 >
-Patient Portal
+👤 Patient Portal
 </button>
 
-
-<button align='center'
-className='secondary'
-onClick={()=>setView(
-'doctorRegister'
-)}
+<button
+className='role-btn doctor'
+onClick={()=>setView('doctorLogin')}
 >
-Doctor Portal
+🩺 Doctor Portal
 </button>
 
-
-<button align='center'
-className='ghost'
-onClick={()=>setView(
-'adminDashboard'
-)}
+<button
+className='role-btn admin'
+onClick={()=>setView('adminDashboard')}
 >
-Admin Portal
+⚙️ Admin Portal
 </button>
 
 </div>
