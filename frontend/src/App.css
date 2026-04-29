@@ -1,37 +1,50 @@
 .page{
-max-width:980px;
+max-width:1100px;
 margin:40px auto;
-padding:24px;
+padding:20px;
 }
 
 .card{
 background:white;
-border-radius:24px;
-padding:28px;
-box-shadow:0 12px 40px rgba(0,0,0,.08);
-margin-bottom:22px;
+border-radius:20px;
+padding:24px;
+box-shadow:0 10px 30px rgba(0,0,0,0.08);
+margin-bottom:20px;
+transition:0.3s;
 }
 
-.hero{
-text-align:center;
-padding:48px 24px;
+.card:hover{
+transform:translateY(-2px);
 }
 
-.hero p{
-margin-top:12px;
-font-size:18px;
-color:#4b5563;
+.nav-top{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:20px;
 }
 
-.role-grid{
-display:grid;
-grid-template-columns:
-repeat(
-auto-fit,
-minmax(180px,1fr)
-);
-gap:16px;
-margin-top:28px;
+h1{
+font-size:28px;
+font-weight:700;
+}
+
+h2{
+margin-bottom:14px;
+color:#374151;
+}
+
+button{
+border:none;
+padding:10px 16px;
+border-radius:12px;
+cursor:pointer;
+font-weight:600;
+transition:0.2s;
+}
+
+button:hover{
+opacity:0.9;
 }
 
 .primary{
@@ -39,13 +52,27 @@ background:#2563eb;
 color:white;
 }
 
-.secondary{
+.success{
 background:#10b981;
 color:white;
 }
 
-.ghost{
-background:#ffffff;
+.danger{
+background:#ef4444;
+color:white;
+}
+
+.logout{
+background:#111827;
+color:white;
+}
+
+input,select{
+width:100%;
+padding:10px;
+border-radius:10px;
+border:1px solid #d1d5db;
+margin-bottom:12px;
 }
 
 .row{
@@ -54,35 +81,35 @@ grid-template-columns:1fr 1fr;
 gap:16px;
 }
 
+.appointment-item{
+background:#f9fafb;
+padding:14px;
+border-radius:14px;
+margin-bottom:12px;
+border:1px solid #e5e7eb;
+display:flex;
+justify-content:space-between;
+align-items:center;
+flex-wrap:wrap;
+}
+
 .badge{
-display:inline-block;
-padding:8px 12px;
-border-radius:999px;
-font-size:13px;
-font-weight:700;
+padding:6px 10px;
+border-radius:20px;
+font-size:12px;
+font-weight:600;
 background:#e0f2fe;
 margin-left:10px;
 }
 
-.appointment-item{
-padding:16px;
-border:1px solid #e5e7eb;
-border-radius:16px;
-margin-bottom:14px;
-background:#fafafa;
-}
-
-.nav-top{
+.actions{
+margin-top:10px;
 display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:18px;
+gap:10px;
 }
 
 @media(max-width:700px){
-
 .row{
 grid-template-columns:1fr;
 }
-
 }
