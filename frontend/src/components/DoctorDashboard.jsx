@@ -1,6 +1,6 @@
 import {useEffect,useState} from 'react'
 import axios from 'axios'
-import '../App.css'
+import '../index.css'
 
 export default function DoctorDashboard({setView,currentDoctorEmail}){
 
@@ -9,62 +9,83 @@ const API='https://healthcare-domain.onrender.com'
 const [doctor,setDoctor]=useState(null)
 const [appointments,setAppointments]=useState([])
 
-useEffect(()=>{load()},[])
+useEffect(()=>{
+axios.get(API+'/api/doctor-auth/profile/'+currentDoctorEmail)
+.then(r=>setDoctor(r.data))
+},[])
 
-const load=async()=>{
-const d=await axios.get(API+'/api/doctor-auth/profile/'+currentDoctorEmail)
-setDoctor(d.data)
-
-const a=await axios.get(API+'/api/appointments/all')
-setAppointments(a.data.filter(x=>x.doctorId===d.data._id))
+useEffect(()=>{
+if(doctor){
+axios.get(API+'/api/appointments/all')
+.then(r=>setAppointments(r.data.filter(a=>a.doctorId===doctor._id)))
 }
+},[doctor])
 
 const update=async(id,status)=>{
 await axios.put(API+'/api/appointments/update/'+id,{status})
-load()
+window.location.reload()
 }
 
-if(!doctor) return <div className='dashboard'>Loading...</div>
+if(!doctor) return <div className="page">Loading...</div>
 
 return(
-<div className='dashboard'>
 
-<div className='navbar'>
-<h1 className='title'>🩺 Doctor Dashboard</h1>
-<button className='logout' onClick={()=>setView('landing')}>
+<div className="page">
+<div className="container">
+
+<div className="card">
+
+<h1>Doctor Dashboard</h1>
+
+<button className="btn logout"
+onClick={()=>setView('landing')}>
 Logout
 </button>
+
 </div>
 
-<div className='section'>
-<h2>Profile</h2>
-<p>{doctor.name}</p>
+<div className="card">
+
+<h2>{doctor.name}</h2>
 <p>{doctor.specialization}</p>
+
 </div>
 
-<div className='section'>
+<div className="card">
+
 <h2>Appointments</h2>
 
 {appointments.map(a=>(
-<div className='item' key={a._id}>
+<div className="appointment" key={a._id}>
 
 <div>
-<b>{a.patientName}</b><br/>
-{a.appointmentDate} | {a.appointmentTime}
+{a.patientName} | {a.appointmentDate}
 </div>
 
-<div className='actions'>
+<div>
 
 {a.status==='Pending' && (
 <>
-<button className='success' onClick={()=>update(a._id,'Accepted')}>Accept</button>
-<button className='danger' onClick={()=>update(a._id,'Rejected')}>Reject</button>
+<button className="btn success"
+onClick={()=>update(a._id,'Accepted')}>
+✔
+</button>
+
+<button className="btn danger"
+onClick={()=>update(a._id,'Rejected')}>
+✖
+</button>
 </>
 )}
 
 {a.status==='Accepted' && (
-<button className='primary' onClick={()=>update(a._id,'Completed')}>Complete</button>
+<button className="btn primary"
+onClick={()=>update(a._id,'Completed')}>
+Done
+</button>
 )}
+
+<span className="badge">{a.status}</span>
 
 </div>
 
@@ -74,5 +95,7 @@ Logout
 </div>
 
 </div>
+</div>
+
 )
 }

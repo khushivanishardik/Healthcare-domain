@@ -1,124 +1,59 @@
-import {useState}
-from 'react'
+import {useState} from 'react'
+import axios from 'axios'
+import '../index.css'
 
-import axios
-from 'axios'
+export default function DoctorLogin({setView,setCurrentDoctorEmail}){
 
+const API='https://healthcare-domain.onrender.com'
 
-export default function DoctorLogin({
-setView,
-setCurrentDoctorEmail
-}){
+const [email,setEmail]=useState('')
+const [password,setPassword]=useState('')
 
-const API=
-'https://healthcare-domain.onrender.com'
+const login=async()=>{
 
-const [email,setEmail]=
-useState('')
+const res=await axios.post(API+'/api/doctor-auth/login',{
+email,password
+})
 
-const [password,setPassword]=
-useState('')
-
-const [message,setMessage]=
-useState('')
-
-
-
-const login=
-async()=>{
-
-try{
-
-const res=
-await axios.post(
-
-API+
-'/api/doctor-auth/login',
-
-{
-email,
-password
-}
-
-)
-
-setCurrentDoctorEmail(
-email
-)
-
-setView(
-'doctorDashboard'
-)
-
-}catch(err){
-
-setMessage(
-
-err?.response?.data?.message
-
-||
-
-'Doctor login failed'
-
-)
-
+if(res.data.success){
+setCurrentDoctorEmail(email)
+setView('doctorDashboard')
+}else{
+alert(res.data.message)
 }
 
 }
-
-
 
 return(
 
-<div>
+<div className="page">
+<div className="card">
 
-<h2>
-Doctor Login
-</h2>
+<h1>Doctor Login</h1>
 
+<input placeholder="Email"
+onChange={e=>setEmail(e.target.value)} />
 
-<input
-placeholder='Doctor Email'
-value={email}
-onChange={(e)=>
-setEmail(
-e.target.value
-)}
-/>
+<input type="password"
+placeholder="Password"
+onChange={e=>setPassword(e.target.value)} />
 
-
-<input
-type='password'
-placeholder='Password'
-value={password}
-onChange={(e)=>
-setPassword(
-e.target.value
-)}
-/>
-
-
-<button onClick={login}>
+<button className="btn primary" onClick={login}>
 Login
 </button>
 
-
-<button
-onClick={()=>setView(
-'landing'
-)}
-style={{
-marginLeft:'10px'
-}}
->
-Go Back Home
+<button className="btn"
+onClick={()=>setView('doctorRegister')}>
+Apply Registration
 </button>
 
+<button className="btn logout"
+onClick={()=>setView('landing')}>
+Back
+</button>
 
-<p>{message}</p>
-
+</div>
 </div>
 
 )
-
 }

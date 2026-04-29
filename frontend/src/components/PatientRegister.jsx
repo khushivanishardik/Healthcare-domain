@@ -1,153 +1,53 @@
-import {useState}
-from 'react'
-
-import axios
-from 'axios'
-
-
+import {useState} from 'react'
+import axios from 'axios'
+import '../index.css'
 
 export default function PatientRegister({setView}){
 
-const API=
-'https://healthcare-domain.onrender.com'
+const API='https://healthcare-domain.onrender.com'
 
+const [email,setEmail]=useState('')
+const [password,setPassword]=useState('')
 
-const [email,setEmail]=
-useState('')
+const register=async()=>{
 
-const [password,setPassword]=
-useState('')
+const res=await axios.post(API+'/api/patient/register',{
+email,password
+})
 
-const [message,setMessage]=
-useState('')
+alert(res.data.message)
 
-const [isSuccess,setIsSuccess]=
-useState(false)
-
-
-
-const register=
-async()=>{
-
-try{
-
-const res=
-await axios.post(
-
-API+'/api/auth/register',
-
-{
-email,
-password
-}
-
-)
-
-setIsSuccess(
-true
-)
-
-setMessage(
-res.data.message
-)
-
-
-}catch(err){
-
-setIsSuccess(
-false
-)
-
-setMessage(
-
-err?.response?.data?.message ||
-
-'Registration failed'
-
-)
-
+if(res.data.success){
+setView('patientLogin')
 }
 
 }
-
-
 
 return(
 
-<div>
+<div className="page">
+<div className="card">
 
-<h2>
-Patient Register
-</h2>
+<h1>Patient Register</h1>
 
+<input placeholder="Email"
+onChange={e=>setEmail(e.target.value)} />
 
-<label>
-Email
-</label>
+<input type="password"
+placeholder="Password"
+onChange={e=>setPassword(e.target.value)} />
 
-<input
-placeholder='Enter Email'
-value={email}
-onChange={(e)=>
-setEmail(
-e.target.value
-)}
-/>
-
-
-<label>
-Password
-</label>
-
-<input
-type='password'
-placeholder='Enter Password'
-value={password}
-onChange={(e)=>
-setPassword(
-e.target.value
-)}
-/>
-
-
-<button onClick={register}>
+<button className="btn success" onClick={register}>
 Register
 </button>
 
-
-<button
-onClick={()=>setView(
-'patientLogin'
-)}
->
-Go To Login
+<button className="btn logout"
+onClick={()=>setView('patientLogin')}>
+Back
 </button>
 
-
-
-{
-message &&
-(
-<div>
-
-{
-isSuccess
-?
-
-'✅ '+message
-
-:
-
-'❌ '+message
-
-}
-
 </div>
-)
-}
-
 </div>
 
 )
-
 }
