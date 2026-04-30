@@ -1,38 +1,15 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const doctorSchema =
-new mongoose.Schema({
+const doctorSchema = new mongoose.Schema({
+  name: String,
+  email: String,
+  password: String,
+  specialization: String,
 
-name:{
-type:String,
-required:true
-},
-
-email:{
-type:String,
-required:true,
-unique:true
-},
-
-password:{
-type:String,
-required:true
-},
-
-specialization:{
-type:String,
-required:true
-},
-
-status:{
-type:String,
-default:'pending'
-}
-
+  approved: {
+    type: Boolean,
+    default: false,
+  },
 });
 
-module.exports =
-mongoose.model(
-'Doctor',
-doctorSchema
-);
+module.exports = mongoose.model("Doctor", doctorSchema);

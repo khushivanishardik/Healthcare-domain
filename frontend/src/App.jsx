@@ -1,119 +1,79 @@
-import React,{useState}
-from 'react'
+import { useState } from "react";
 
-import Landing from './components/Landing'
+import Landing from "./components/Landing";
+import PatientLogin from "./components/PatientLogin";
+import PatientDashboard from "./components/PatientDashboard";
 
-import PatientRegister from './components/PatientRegister'
+import DoctorLogin from "./components/DoctorLogin";
+import DoctorDashboard from "./components/DoctorDashboard";
 
-import PatientLogin from './components/PatientLogin'
+import AdminDashboard from "./components/AdminDashboard";
 
-import DoctorRegister from './components/DoctorRegister'
+export default function App() {
 
-import DoctorLogin from './components/DoctorLogin'
+  const [view, setView] = useState("landing");
 
-import PatientDashboard from './components/PatientDashboard'
+  const [patientEmail, setPatientEmail] = useState(null);
+  const [doctorEmail, setDoctorEmail] = useState(null);
 
-import DoctorDashboard from './components/DoctorDashboard'
+  return (
 
-import AdminDashboard from './components/AdminDashboard'
+    <div>
 
+      {/* LANDING */}
+      {view === "landing" && (
+        <Landing setView={setView} />
+      )}
 
+      {/* PATIENT LOGIN */}
+      {view === "patientLogin" && (
+        <PatientLogin
+          setView={setView}
+          setPatientEmail={setPatientEmail}
+        />
+      )}
 
-export default function App(){
+      {/* PATIENT DASHBOARD */}
+      {view === "patientDashboard" && (
+        patientEmail ? (
+          <PatientDashboard
+            setView={setView}
+            currentUserEmail={patientEmail}
+          />
+        ) : (
+          <h1 style={{ color: "white", textAlign: "center" }}>
+            Loading Patient...
+          </h1>
+        )
+      )}
 
-const [view,setView]=
-useState('landing')
+      {/* DOCTOR LOGIN */}
+      {view === "doctorLogin" && (
+        <DoctorLogin
+          setView={setView}
+          setDoctorEmail={setDoctorEmail}
+        />
+      )}
 
+      {/* DOCTOR DASHBOARD */}
+      {view === "doctorDashboard" && (
+        doctorEmail ? (
+          <DoctorDashboard
+            setView={setView}
+            currentDoctorEmail={doctorEmail}
+          />
+        ) : (
+          <h1 style={{ color: "white", textAlign: "center" }}>
+            Loading Doctor...
+          </h1>
+        )
+      )}
 
-const [currentUserEmail,
-setCurrentUserEmail]=
-useState('')
+      {/* ADMIN DASHBOARD */}
+      {view === "adminDashboard" && (
+        <AdminDashboard setView={setView} />
+      )}
 
-
-const [currentDoctorEmail,
-setCurrentDoctorEmail]=
-useState('')
-
-
-
-return(
-
-<>
-
-{
-view==='landing'
-&&
-<Landing setView={setView}/>
-}
-
-
-{
-view==='patientRegister'
-&&
-<PatientRegister setView={setView}/>
-}
-
-
-{
-view==='patientLogin'
-&&
-<PatientLogin
-setView={setView}
-setCurrentUserEmail={setCurrentUserEmail}
-/>
-}
-
-
-
-{
-view==='doctorRegister'
-&&
-<DoctorRegister setView={setView}/>
-}
-
-
-
-{
-view==='doctorLogin'
-&&
-<DoctorLogin
-setView={setView}
-setCurrentDoctorEmail={setCurrentDoctorEmail}
-/>
-}
-
-
-
-{
-view==='patientDashboard'
-&&
-<PatientDashboard
-setView={setView}
-currentUserEmail={currentUserEmail}
-/>
-}
-
-
-
-{
-view==='doctorDashboard'
-&&
-<DoctorDashboard
-setView={setView}
-currentDoctorEmail={currentDoctorEmail}
-/>
-}
-
-
-
-{
-view==='adminDashboard'
-&&
-<AdminDashboard setView={setView}/>
-}
-
-</>
-
-)
-
+    </div>
+  );
 }

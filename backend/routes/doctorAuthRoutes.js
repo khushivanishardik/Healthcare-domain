@@ -1,216 +1,62 @@
-const express = require('express');
-
+const express = require("express");
 const router = express.Router();
+const Doctor = require("../models/Doctor");
 
-const Doctor =
-require('../models/Doctor');
+// REGISTER (apply for approval)
+router.post("/register", async (req, res) => {
+  try {
+    const { name, email, password, specialization } = req.body;
 
-const bcrypt =
-require('bcryptjs');
+    const exists = await Doctor.findOne({ email });
+    if (exists) return res.status(400).json({ msg: "Doctor exists" });
 
-const jwt =
-require('jsonwebtoken');
+    const doc = new Doctor({
+      name,
+      email,
+      password,
+      specialization,
+      approved: false,
+    });
 
+    await doc.save();
 
+    res.json({ msg: "Applied for approval" });
 
-router.post(
-'/register',
-async(req,res)=>{
-
-try{
-
-const {
-name,
-email,
-password,
-specialization
-}=req.body;
-
-
-
-const existing=
-await Doctor.findOne({
-email
+  } catch (err) {
+    res.status(500).json({ msg: "Error" });
+  }
 });
 
-if(existing){
+// LOGIN
+router.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
 
-return res.status(400).json({
-message:
-'Doctor already exists'
+    const doc = await Doctor.findOne({ email, password });
+
+    if (!doc) return res.status(400).json({ msg: "Invalid credentials" });
+
+    if (!doc.approved)
+      return res.status(403).json({ msg: "Waiting for admin approval" });
+
+    res.json({
+      msg: "Login successful",
+      doctor: doc,
+    });
+
+  } catch (err) {
+    res.status(500).json({ msg: "Error" });
+  }
 });
 
-}
-
-
-
-const hashedPassword=
-await bcrypt.hash(
-password,
-10
-);
-
-
-
-await Doctor.create({
-
-name,
-
-email,
-
-password:hashedPassword,
-
-specialization,
-
-status:'pending'
-
-});
-
-
-
-res.json({
-
-message:
-'Application submitted for admin approval'
-
-});
-
-
-}catch(err){
-
-console.log(err);
-
-res.status(500).json({
-message:'Server error'
-});
-
-}
-
-});
-
-
-
-router.post(
-'/login',
-async(req,res)=>{
-
-try{
-
-const {
-email,
-password
-}=req.body;
-
-
-
-const doctor=
-await Doctor.findOne({
-email
-});
-
-
-if(!doctor){
-
-return res.status(400).json({
-message:
-'Invalid credentials'
-});
-
-}
-
-
-
-if(
-doctor.status
-!== 'approved'
-){
-
-return res.status(403).json({
-
-message:
-'Awaiting admin approval'
-
-});
-
-}
-
-
-
-const isMatch=
-await bcrypt.compare(
-password,
-doctor.password
-);
-
-
-if(!isMatch){
-
-return res.status(400).json({
-message:
-'Invalid credentials'
-});
-
-}
-
-
-
-const token=
-jwt.sign(
-
-{
-id:doctor._id,
-role:'doctor'
-},
-
-process.env.JWT_SECRET
-|| 'mysecretkey',
-
-{
-expiresIn:'1d'
-}
-
-);
-
-
-
-res.json({
-
-message:
-'Doctor login successful',
-
-token
-
-});
-
-
-}catch(err){
-
-console.log(err);
-
-res.status(500).json({
-message:'Server error'
-});
-
-}
-
-});
-
-router.get(
-'/profile/:email',
-async(req,res)=>{
-
-const doctor=
-await Doctor.findOne({
-
-email:
-req.params.email
-
-});
-
-res.json(
-doctor
-);
-
+// GET PROFILE
+router.get("/profile/:email", async (req, res) => {
+  try {
+    const doc = await Doctor.findOne({ email: req.params.email });
+    res.json(doc);
+  } catch {
+    res.status(500).json({ msg: "Error" });
+  }
 });
 
 module.exports = router;

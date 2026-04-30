@@ -1,113 +1,171 @@
-import {useEffect,useState} from 'react'
-import axios from 'axios'
-import '../index.css'
+import { useEffect, useState } from "react";
+import axios from "axios";
+import "../index.css";
 
-export default function PatientDashboard({setView,currentUserEmail}){
+export default function PatientDashboard({ setView, currentUserEmail }) {
 
-const API='https://healthcare-domain.onrender.com'
+  const API = "https://healthcare-domain.onrender.com";
 
-const [profile,setProfile]=useState({})
-const [appointments,setAppointments]=useState([])
-const [doctors,setDoctors]=useState([])
+  const [profile, setProfile] = useState({});
+  const [appointments, setAppointments] = useState([]);
+  const [doctors, setDoctors] = useState([]);
 
-const [doctorId,setDoctorId]=useState('')
-const [doctorName,setDoctorName]=useState('')
-const [specialization,setSpecialization]=useState('')
-const [date,setDate]=useState('')
-const [time,setTime]=useState('')
+  const [doctorId, setDoctorId] = useState("");
+  const [doctorName, setDoctorName] = useState("");
+  const [specialization, setSpecialization] = useState("");
 
-useEffect(()=>{
-axios.get(API+'/api/profile/one/'+currentUserEmail)
-.then(r=>setProfile(r.data||{}))
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
 
-axios.get(API+'/api/appointments/all')
-.then(r=>setAppointments(r.data.filter(a=>a.patientId===currentUserEmail)))
+  // 🔥 SAFETY CHECK
+  if (!currentUserEmail) {
+    return <h1 style={{ color: "white" }}>Loading patient...</h1>;
+  }
 
-axios.get(API+'/api/admin/approved-doctors')
-.then(r=>setDoctors(r.data))
-},[])
+  // 🔥 LOAD DATA
+  useEffect(() => {
+    axios
+      .get(API + "/api/profile/one/" + currentUserEmail)
+      .then((r) => setProfile(r.data || {}))
+      .catch((err) => console.log(err));
 
-const book=async()=>{
-await axios.post(API+'/api/appointments/book',{
-patientId:currentUserEmail,
-patientName:profile.name,
-doctorId,doctorName,specialization,
-appointmentDate:date,
-appointmentTime:time
-})
-window.location.reload()
-}
+    axios
+      .get(API + "/api/appointments/all")
+      .then((r) =>
+        setAppointments(
+          r.data.filter((a) => a.patientId === currentUserEmail)
+        )
+      )
+      .catch((err) => console.log(err));
 
-return(
+    axios
+      .get(API + "/api/admin/approved-doctors")
+      .then((r) => setDoctors(r.data))
+      .catch((err) => console.log(err));
 
-<div className="page">
-<div className="container">
+  }, [currentUserEmail]);
 
-<div className="card">
+  // 🔥 BOOK APPOINTMENT
+  const book = async () => {
+    try {
+      await axios.post(API + "/api/appointments/book", {
+        patientId: currentUserEmail,
+        patientName: profile?.name,
+        doctorId,
+        doctorName,
+        specialization,
+        appointmentDate: date,
+        appointmentTime: time,
+      });
 
-<h1>Patient Dashboard</h1>
+      // refresh appointments
+      const res = await axios.get(API + "/api/appointments/all");
 
-<button className="btn logout"
-onClick={()=>setView('landing')}>
-Logout
-</button>
+      setAppointments(
+        res.data.filter((a) => a.patientId === currentUserEmail)
+      );
 
-</div>
+      // 🔥 RESET FORM
+      setDoctorId("");
+      setDoctorName("");
+      setSpecialization("");
+      setDate("");
+      setTime("");
 
-<div className="card">
+      alert("Appointment booked successfully");
 
-<h2>Personal Info</h2>
+    } catch (err) {
+      console.log(err);
+      alert("Booking failed");
+    }
+  };
 
-<p>Name: {profile.name}</p>
-<p>Phone: {profile.phone}</p>
+  return (
+    <div className="page">
+      <div className="container">
 
-</div>
+        {/* HEADER */}
+        <div className="card">
+          <h1>Patient Dashboard</h1>
 
-<div className="card">
+          <button
+            className="btn logout"
+            onClick={() => setView("landing")}
+          >
+            Logout
+          </button>
+        </div>
 
-<h2>Book Appointment</h2>
+        {/* PROFILE */}
+        <div className="card">
+          <h2>Personal Info</h2>
 
-<select onChange={e=>{
-const d=doctors.find(x=>x._id===e.target.value)
-setDoctorId(d._id)
-setDoctorName(d.name)
-setSpecialization(d.specialization)
-}}>
+          <p>Name: {profile?.name || "Not set"}</p>
+          <p>Phone: {profile?.phone || "Not set"}</p>
+        </div>
 
-<option>Select Doctor</option>
+        {/* BOOK APPOINTMENT */}
+        <div className="card">
+          <h2>Book Appointment</h2>
 
-{doctors.map(d=>(
-<option key={d._id} value={d._id}>
-{d.name} - {d.specialization}
-</option>
-))}
+          <select
+            value={doctorId}
+            onChange={(e) => {
+              const d = doctors.find(x => x._id === e.target.value);
 
-</select>
+              if (d) {
+                setDoctorId(d._id);
+                setDoctorName(d.name);
+                setSpecialization(d.specialization);
+              }
+            }}
+          >
+            <option value="">Select Doctor</option>
 
-<input type="date" onChange={e=>setDate(e.target.value)} />
-<input type="time" onChange={e=>setTime(e.target.value)} />
+            {doctors.map((d) => (
+              <option key={d._id} value={d._id}>
+                {d.name} - {d.specialization}
+              </option>
+            ))}
+          </select>
 
-<button className="btn primary" onClick={book}>
-Book
-</button>
+          <input
+            type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+          />
 
-</div>
+          <input
+            type="time"
+            value={time}
+            onChange={(e) => setTime(e.target.value)}
+          />
 
-<div className="card">
+          <button className="btn primary" onClick={book}>
+            Book Appointment
+          </button>
+        </div>
 
-<h2>Appointments</h2>
+        {/* APPOINTMENTS */}
+        <div className="card">
+          <h2>Appointment History</h2>
 
-{appointments.map(a=>(
-<div className="appointment" key={a._id}>
-{a.doctorName} | {a.appointmentDate}
-<span className="badge">{a.status}</span>
-</div>
-))}
+          {appointments.length === 0 && (
+            <p>No appointments yet</p>
+          )}
 
-</div>
+          {appointments.map((a) => (
+            <div className="appointment" key={a._id}>
+              <div>
+                {a.doctorName} | {a.appointmentDate} | {a.appointmentTime}
+              </div>
 
-</div>
-</div>
+              <span className="badge">{a.status}</span>
+            </div>
+          ))}
+        </div>
 
-)
+      </div>
+    </div>
+  );
 }

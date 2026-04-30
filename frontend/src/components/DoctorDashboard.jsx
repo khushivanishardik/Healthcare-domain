@@ -1,101 +1,129 @@
-import {useEffect,useState} from 'react'
-import axios from 'axios'
-import '../index.css'
+import { useEffect, useState } from "react";
+import axios from "axios";
+import "../index.css";
 
-export default function DoctorDashboard({setView,currentDoctorEmail}){
+export default function DoctorDashboard({ setView, currentDoctorEmail }) {
 
-const API='https://healthcare-domain.onrender.com'
+  const API = "https://healthcare-domain.onrender.com";
 
-const [doctor,setDoctor]=useState(null)
-const [appointments,setAppointments]=useState([])
+  const [doctor, setDoctor] = useState(null);
+  const [appointments, setAppointments] = useState([]);
 
-useEffect(()=>{
-axios.get(API+'/api/doctor-auth/profile/'+currentDoctorEmail)
-.then(r=>setDoctor(r.data))
-},[])
+  // 🔥 FIX 1: WAIT until email exists
+  useEffect(() => {
+  if (!currentDoctorEmail) return;
 
-useEffect(()=>{
-if(doctor){
-axios.get(API+'/api/appointments/all')
-.then(r=>setAppointments(r.data.filter(a=>a.doctorId===doctor._id)))
+  axios
+    .get(API + "/api/doctor-auth/profile/" + currentDoctorEmail)
+    .then((r) => setDoctor(r.data))
+    .catch((err) => console.log(err));
+}, [currentDoctorEmail]);
+  // 🔥 FIX 2: safe appointments fetch
+  useEffect(() => {
+    if (!doctor) return;
+
+    axios
+      .get(API + "/api/appointments/all")
+      .then((r) =>
+        setAppointments(
+          r.data.filter((a) => a.doctorId === doctor._id)
+        )
+      )
+      .catch((err) => console.log("Appointment error:", err));
+  }, [doctor]);
+
+  const update = async (id, status) => {
+  try {
+    await axios.put(API + "/api/appointments/update/" + id, { status });
+
+    // 🔥 REFRESH DATA WITHOUT RELOAD
+    const res = await axios.get(API + "/api/appointments/all");
+
+    setAppointments(
+      res.data.filter((a) => a.doctorId === doctor._id)
+    );
+
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+  // 🔥 FIX 3: prevent crash
+  if (!currentDoctorEmail) {
+  return <h1 style={{ color: "white" }}>Waiting for login...</h1>;
 }
-},[doctor])
 
-const update=async(id,status)=>{
-await axios.put(API+'/api/appointments/update/'+id,{status})
-window.location.reload()
-}
+  if (!doctor) {
+    return <div className="page"><h2>Fetching doctor data...</h2></div>;
+  }
 
-if(!doctor) return <div className="page">Loading...</div>
+  return (
+    <div className="page">
+      <div className="container">
 
-return(
+        <div className="card">
+          <h1>Doctor Dashboard</h1>
 
-<div className="page">
-<div className="container">
+          <button
+            className="btn logout"
+            onClick={() => setView("landing")}
+          >
+            Logout
+          </button>
+        </div>
 
-<div className="card">
+        <div className="card">
+          <h2>{doctor.name}</h2>
+          <p>{doctor.specialization}</p>
+        </div>
 
-<h1>Doctor Dashboard</h1>
+        <div className="card">
+          <h2>Appointments</h2>
 
-<button className="btn logout"
-onClick={()=>setView('landing')}>
-Logout
-</button>
+          {appointments.length === 0 && <p>No appointments</p>}
 
-</div>
+          {appointments.map((a) => (
+            <div className="appointment" key={a._id}>
+              <div>
+                {a.patientName} | {a.appointmentDate}
+              </div>
 
-<div className="card">
+              <div>
 
-<h2>{doctor.name}</h2>
-<p>{doctor.specialization}</p>
+                {a.status === "Pending" && (
+                  <>
+                    <button
+                      className="btn success"
+                      onClick={() => update(a._id, "Accepted")}
+                    >
+                      ✔
+                    </button>
 
-</div>
+                    <button
+                      className="btn danger"
+                      onClick={() => update(a._id, "Rejected")}
+                    >
+                      ✖
+                    </button>
+                  </>
+                )}
 
-<div className="card">
+                {a.status === "Accepted" && (
+                  <button
+                    className="btn primary"
+                    onClick={() => update(a._id, "Completed")}
+                  >
+                    Done
+                  </button>
+                )}
 
-<h2>Appointments</h2>
+                <span className="badge">{a.status}</span>
+              </div>
+            </div>
+          ))}
+        </div>
 
-{appointments.map(a=>(
-<div className="appointment" key={a._id}>
-
-<div>
-{a.patientName} | {a.appointmentDate}
-</div>
-
-<div>
-
-{a.status==='Pending' && (
-<>
-<button className="btn success"
-onClick={()=>update(a._id,'Accepted')}>
-✔
-</button>
-
-<button className="btn danger"
-onClick={()=>update(a._id,'Rejected')}>
-✖
-</button>
-</>
-)}
-
-{a.status==='Accepted' && (
-<button className="btn primary"
-onClick={()=>update(a._id,'Completed')}>
-Done
-</button>
-)}
-
-<span className="badge">{a.status}</span>
-
-</div>
-
-</div>
-))}
-
-</div>
-
-</div>
-</div>
-
-)
+      </div>
+    </div>
+  );
 }

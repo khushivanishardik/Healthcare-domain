@@ -1,59 +1,49 @@
-import {useState} from 'react'
-import axios from 'axios'
-import '../index.css'
+import { useState } from "react";
+import axios from "axios";
 
-export default function PatientLogin({setView,setCurrentUserEmail}){
+export default function PatientLogin({ setView, setPatientEmail }) {
 
-const API='https://healthcare-domain.onrender.com'
+  const [email, setEmailInput] = useState("");
+  const [password, setPassword] = useState("");
 
-const [email,setEmail]=useState('')
-const [password,setPassword]=useState('')
+  const login = async () => {
+    try {
+      await axios.post(
+        "https://healthcare-domain.onrender.com/api/auth/login",
+        { email, password }
+      );
 
-const login=async()=>{
+      console.log("Patient login success:", email);
 
-const res=await axios.post(API+'/api/patient/login',{
-email,password
-})
+      setPatientEmail(email);
+      setView("patientDashboard");
 
-if(res.data.success){
-setCurrentUserEmail(email)
-setView('patientDashboard')
-}else{
-alert(res.data.message)
-}
+    } catch (err) {
+      console.log(err);
+      alert("Login failed");
+    }
+  };
 
-}
+  return (
+    <div style={{ color: "white" }}>
+      <h1>Patient Login</h1>
 
-return(
+      <input
+        placeholder="Email"
+        onChange={(e) => setEmailInput(e.target.value)}
+      />
 
-<div className="page">
-<div className="card">
+      <input
+        type="password"
+        placeholder="Password"
+        onChange={(e) => setPassword(e.target.value)}
+      />
 
-<h1>Patient Login</h1>
+      <button onClick={login}>Login</button>
 
-<input placeholder="Email"
-onChange={e=>setEmail(e.target.value)} />
-
-<input type="password"
-placeholder="Password"
-onChange={e=>setPassword(e.target.value)} />
-
-<button className="btn primary" onClick={login}>
-Login
-</button>
-
-<button className="btn"
-onClick={()=>setView('patientRegister')}>
-Register
-</button>
-
-<button className="btn logout"
-onClick={()=>setView('landing')}>
-Back
-</button>
-
-</div>
-</div>
-
-)
+      <button onClick={() => setView("landing")}>
+        Go Back
+      </button>
+    </div>
+  );
 }

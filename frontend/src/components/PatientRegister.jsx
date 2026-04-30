@@ -1,53 +1,54 @@
-import {useState} from 'react'
-import axios from 'axios'
-import '../index.css'
+import { useState } from "react";
+import axios from "axios";
+import "../index.css";
 
-export default function PatientRegister({setView}){
+export default function PatientRegister({ setView }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-const API='https://healthcare-domain.onrender.com'
+  const API = "https://healthcare-domain.onrender.com";
 
-const [email,setEmail]=useState('')
-const [password,setPassword]=useState('')
+  const register = async () => {
+    try {
+      await axios.post(API + "/api/auth/register", {
+        email,
+        password,
+      });
 
-const register=async()=>{
+      alert("Patient Registered Successfully");
+      setView("patientLogin");
 
-const res=await axios.post(API+'/api/patient/register',{
-email,password
-})
+    } catch (err) {
+      alert(err.response?.data?.msg || "Registration failed");
+    }
+  };
 
-alert(res.data.message)
+  return (
+    <div className="page">
+      <div className="card">
 
-if(res.data.success){
-setView('patientLogin')
-}
+        <h1>Patient Register</h1>
 
-}
+        <input
+          placeholder="Enter Email"
+          onChange={(e) => setEmail(e.target.value)}
+        />
 
-return(
+        <input
+          type="password"
+          placeholder="Enter Password"
+          onChange={(e) => setPassword(e.target.value)}
+        />
 
-<div className="page">
-<div className="card">
+        <button className="btn primary" onClick={register}>
+          Register
+        </button>
 
-<h1>Patient Register</h1>
+        <button className="btn" onClick={() => setView("patientLogin")}>
+          Back
+        </button>
 
-<input placeholder="Email"
-onChange={e=>setEmail(e.target.value)} />
-
-<input type="password"
-placeholder="Password"
-onChange={e=>setPassword(e.target.value)} />
-
-<button className="btn success" onClick={register}>
-Register
-</button>
-
-<button className="btn logout"
-onClick={()=>setView('patientLogin')}>
-Back
-</button>
-
-</div>
-</div>
-
-)
+      </div>
+    </div>
+  );
 }
