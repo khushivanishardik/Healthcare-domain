@@ -17,40 +17,73 @@ export default function PatientDashboard({ setView, currentUserEmail }) {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
 
-  // 🔥 SAFETY CHECK
+  const [editing, setEditing] = useState(false);
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+
+  // 🔥 Safety check
   if (!currentUserEmail) {
-    return <h1 style={{ color: "white" }}>Loading patient...</h1>;
+    return <h1 style={{ color: "white" }}>Loading...</h1>;
   }
 
-  // 🔥 LOAD DATA
+  // 🔥 Load data
   useEffect(() => {
-    axios
-      .get(API + "/api/profile/one/" + currentUserEmail)
-      .then((r) => setProfile(r.data || {}))
-      .catch((err) => console.log(err));
 
-    axios
-      .get(API + "/api/appointments/all")
+    // profile
+    axios.get(API + "/api/profile/" + currentUserEmail)
+      .then((r) => {
+        setProfile(r.data || {});
+        setName(r.data?.name || "");
+        setPhone(r.data?.phone || "");
+      })
+      .catch(err => console.log(err));
+
+    // appointments
+    axios.get(API + "/api/appointments/all")
       .then((r) =>
         setAppointments(
           r.data.filter((a) => a.patientId === currentUserEmail)
         )
       )
-      .catch((err) => console.log(err));
+      .catch(err => console.log(err));
 
-    axios
-      .get(API + "/api/admin/approved-doctors")
+    // doctors
+    axios.get(API + "/api/admin/approved-doctors")
       .then((r) => setDoctors(r.data))
-      .catch((err) => console.log(err));
+      .catch(err => console.log(err));
 
   }, [currentUserEmail]);
 
-  // 🔥 BOOK APPOINTMENT
+  // 🔥 Update Profile
+ const updateProfile = async () => {
+  try {
+    const res = await axios.put(
+      `${API}/api/profile/update/${currentUserEmail}`,
+      {
+        name,
+        phone
+      }
+    );
+
+    alert("Updated successfully ✅");
+
+  } catch (err) {
+    console.log(err.response?.data || err.message);
+    alert("Update failed ❌");
+  }
+};
+
+  // 🔥 Book Appointment
   const book = async () => {
+
+    if (!doctorId || !date || !time) {
+      return alert("Please fill all fields");
+    }
+
     try {
       await axios.post(API + "/api/appointments/book", {
         patientId: currentUserEmail,
-        patientName: profile?.name,
+        patientName: name || currentUserEmail,
         doctorId,
         doctorName,
         specialization,
@@ -65,7 +98,7 @@ export default function PatientDashboard({ setView, currentUserEmail }) {
         res.data.filter((a) => a.patientId === currentUserEmail)
       );
 
-      // 🔥 RESET FORM
+      // reset form
       setDoctorId("");
       setDoctorName("");
       setSpecialization("");
@@ -75,7 +108,7 @@ export default function PatientDashboard({ setView, currentUserEmail }) {
       alert("Appointment booked successfully");
 
     } catch (err) {
-      console.log(err);
+      console.log("BOOK ERROR:", err.response?.data);
       alert("Booking failed");
     }
   };
@@ -96,12 +129,48 @@ export default function PatientDashboard({ setView, currentUserEmail }) {
           </button>
         </div>
 
-        {/* PROFILE */}
+        {/* PERSONAL INFO */}
         <div className="card">
           <h2>Personal Info</h2>
 
-          <p>Name: {profile?.name || "Not set"}</p>
-          <p>Phone: {profile?.phone || "Not set"}</p>
+          {!editing ? (
+            <>
+              <p>Name: {profile?.name || "Not set"}</p>
+              <p>Phone: {profile?.phone || "Not set"}</p>
+
+              <button
+                className="btn primary"
+                onClick={() => setEditing(true)}
+              >
+                Edit
+              </button>
+            </>
+          ) : (
+            <>
+              <input
+                placeholder="Enter Name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+
+              <input
+                placeholder="Enter Phone"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+              />
+
+              <button className="btn success" onClick={updateProfile}>
+                Save
+              </button>
+
+              <button
+                className="btn danger"
+                onClick={() => setEditing(false)}
+              >
+                Cancel
+              </button>
+            </>
+          )}
         </div>
 
         {/* BOOK APPOINTMENT */}

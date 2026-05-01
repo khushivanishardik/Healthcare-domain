@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Doctor = require("../models/Doctor");
 
-// REGISTER (apply for approval)
+// REGISTER (apply)
 router.post("/register", async (req, res) => {
   try {
     const { name, email, password, specialization } = req.body;
@@ -15,15 +15,15 @@ router.post("/register", async (req, res) => {
       email,
       password,
       specialization,
-      approved: false,
+      approved: false
     });
 
     await doc.save();
 
     res.json({ msg: "Applied for approval" });
 
-  } catch (err) {
-    res.status(500).json({ msg: "Error" });
+  } catch {
+    res.status(500).json({ msg: "Application failed" });
   }
 });
 
@@ -39,24 +39,17 @@ router.post("/login", async (req, res) => {
     if (!doc.approved)
       return res.status(403).json({ msg: "Waiting for admin approval" });
 
-    res.json({
-      msg: "Login successful",
-      doctor: doc,
-    });
+    res.json({ msg: "Login success", doctor: doc });
 
-  } catch (err) {
+  } catch {
     res.status(500).json({ msg: "Error" });
   }
 });
 
-// GET PROFILE
+// PROFILE
 router.get("/profile/:email", async (req, res) => {
-  try {
-    const doc = await Doctor.findOne({ email: req.params.email });
-    res.json(doc);
-  } catch {
-    res.status(500).json({ msg: "Error" });
-  }
+  const doc = await Doctor.findOne({ email: req.params.email });
+  res.json(doc);
 });
 
 module.exports = router;

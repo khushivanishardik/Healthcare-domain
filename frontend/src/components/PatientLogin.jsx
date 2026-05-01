@@ -1,9 +1,10 @@
 import { useState } from "react";
 import axios from "axios";
+import "../index.css";
 
 export default function PatientLogin({ setView, setPatientEmail }) {
 
-  const [email, setEmailInput] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const login = async () => {
@@ -13,37 +14,38 @@ export default function PatientLogin({ setView, setPatientEmail }) {
         { email, password }
       );
 
-      console.log("Patient login success:", email);
-
       setPatientEmail(email);
       setView("patientDashboard");
 
-    } catch (err) {
-      console.log(err);
-      alert("Login failed");
     }
+     catch (err) {
+        console.log(err.response?.data);
+        alert(err.response?.data?.msg || "Login failed");
+  }
   };
 
   return (
-    <div style={{ color: "white" }}>
-      <h1>Patient Login</h1>
+    <div className="page">
+      <div className="card">
 
-      <input
-        placeholder="Email"
-        onChange={(e) => setEmailInput(e.target.value)}
-      />
+        <h1>Patient Login</h1>
 
-      <input
-        type="password"
-        placeholder="Password"
-        onChange={(e) => setPassword(e.target.value)}
-      />
+        <input placeholder="Email" onChange={(e)=>setEmail(e.target.value)} />
+        <input type="password" placeholder="Password" onChange={(e)=>setPassword(e.target.value)} />
 
-      <button onClick={login}>Login</button>
+        <button className="btn primary full" onClick={login}>
+          Login
+        </button>
 
-      <button onClick={() => setView("landing")}>
-        Go Back
-      </button>
+        <button className="btn success full" onClick={()=>setView("patientRegister")}>
+          Register
+        </button>
+
+        <button className="btn danger full" onClick={()=>setView("landing")}>
+          Go Back
+        </button>
+
+      </div>
     </div>
   );
 }

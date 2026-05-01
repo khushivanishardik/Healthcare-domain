@@ -1,136 +1,28 @@
-const express = require('express');
-
+const express = require("express");
 const router = express.Router();
+const Appointment = require("../models/Appointment");
 
-const Appointment =
-require('../models/Appointment');
-
-
-router.post('/book', async(req,res)=>{
-
- try{
-
-   const appointment =
-   await Appointment.create(
-    req.body
-   );
-
-   res.json({
-    message:'Appointment booked',
-    appointment
-   });
-
- }catch(err){
-
-   res.status(500).json({
-    message:'Server error'
-   });
-
- }
-
+// BOOK
+router.post("/book", async (req, res) => {
+  try {
+    const appt = new Appointment(req.body);
+    await appt.save();
+    res.json({ msg: "Booked" });
+  } catch {
+    res.status(500).json({ msg: "Booking failed" });
+  }
 });
 
-
-
-router.get(
-'/all',
-async(req,res)=>{
-
-try{
-
-const appointments =
-await Appointment.find();
-
-res.json(
-appointments
-);
-
-}catch(err){
-
-res.status(500).json({
-message:'Server error'
+// GET ALL
+router.get("/all", async (req, res) => {
+  const data = await Appointment.find();
+  res.json(data);
 });
 
-}
-
+// UPDATE
+router.put("/update/:id", async (req, res) => {
+  await Appointment.findByIdAndUpdate(req.params.id, req.body);
+  res.json({ msg: "Updated" });
 });
-
-
-
-router.put(
-'/update/:id',
-async(req,res)=>{
-
-try{
-
-const appointment =
-await Appointment.findById(
-req.params.id
-);
-
-if(!appointment){
-
-return res.status(404).json({
-message:'Appointment not found'
-});
-
-}
-
-
-
-if(
-req.body.status==='Accepted'
-){
-
-appointment.status =
-'Accepted';
-
-}
-
-
-
-if(
-req.body.status==='Rejected'
-){
-
-appointment.status =
-'Rejected';
-
-}
-
-
-
-if(
-req.body.status==='Completed'
-){
-
-appointment.status =
-'Completed';
-
-appointment.completedAt =
-new Date();
-
-}
-
-
-
-await appointment.save();
-
-res.json({
-message:'Appointment updated',
-appointment
-});
-
-}catch(err){
-
-res.status(500).json({
-message:'Server error'
-});
-
-}
-
-});
-
-
 
 module.exports = router;

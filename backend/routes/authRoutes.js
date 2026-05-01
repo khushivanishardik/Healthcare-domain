@@ -10,9 +10,12 @@ router.post("/register", async (req, res) => {
     const exists = await User.findOne({ email });
     if (exists) return res.status(400).json({ msg: "User exists" });
 
-    const user = new User({ email, password });
-    await user.save();
+    const user = new User({
+      email: email.toLowerCase(),
+      password
+    });
 
+    await user.save();
     res.json({ msg: "Registered successfully" });
 
   } catch {
@@ -25,14 +28,14 @@ router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email, password });
+    const user = await User.findOne({
+      email: email.toLowerCase(),
+      password
+    });
 
     if (!user) return res.status(400).json({ msg: "Invalid credentials" });
 
-    res.json({
-      msg: "Login successful",
-      user,
-    });
+    res.json({ msg: "Login successful", user });
 
   } catch {
     res.status(500).json({ msg: "Error" });

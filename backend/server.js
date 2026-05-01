@@ -1,36 +1,30 @@
-// server.js
+require("dotenv").config();
 
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-require("dotenv").config();
 
 const app = express();
 
-// 🔥 Middleware
+// Middleware
 app.use(cors());
 app.use(express.json());
 
-// 🔥 MongoDB Connection
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => console.log("✅ MongoDB Connected"))
-  .catch((err) => console.log("❌ DB Error:", err));
-
-// 🔥 Routes
+// Routes (adjust if needed)
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/doctor-auth", require("./routes/doctorAuthRoutes"));
-app.use("/api/admin", require("./routes/adminRoutes"));
 app.use("/api/appointments", require("./routes/appointmentRoutes"));
 app.use("/api/profile", require("./routes/profileRoutes"));
-app.use("/api/notifications", require("./routes/notificationRoutes"));
+app.use("/api/admin", require("./routes/adminRoutes"));
 
-// 🔥 Default Route
-app.get("/", (req, res) => {
-  res.send("🚀 Healthcare API Running");
-});
+// MongoDB Connection
+mongoose.connect(process.env.MONGO_URI, {
+  serverSelectionTimeoutMS: 5000,
+})
+.then(() => console.log("✅ MongoDB connected"))
+.catch((err) => console.log("❌ MongoDB error:", err));
 
-// 🔥 Server Start
+// Server Start
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {

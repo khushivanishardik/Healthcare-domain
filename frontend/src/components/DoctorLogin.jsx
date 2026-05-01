@@ -1,9 +1,10 @@
 import { useState } from "react";
 import axios from "axios";
+import "../index.css";
 
 export default function DoctorLogin({ setView, setDoctorEmail }) {
 
-  const [email, setEmailInput] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const login = async () => {
@@ -13,37 +14,37 @@ export default function DoctorLogin({ setView, setDoctorEmail }) {
         { email, password }
       );
 
-      console.log("Doctor login success:", email);
-
       setDoctorEmail(email);
       setView("doctorDashboard");
 
     } catch (err) {
-      console.log(err);
-      alert("Login failed or not approved");
-    }
+  console.log(err.response?.data);
+  alert(err.response?.data?.msg || "Login failed");
+}
   };
 
   return (
-    <div style={{ color: "white" }}>
-      <h1>Doctor Login</h1>
+    <div className="page">
+      <div className="card">
 
-      <input
-        placeholder="Email"
-        onChange={(e) => setEmailInput(e.target.value)}
-      />
+        <h1>Doctor Login</h1>
 
-      <input
-        type="password"
-        placeholder="Password"
-        onChange={(e) => setPassword(e.target.value)}
-      />
+        <input placeholder="Email" onChange={(e)=>setEmail(e.target.value)} />
+        <input type="password" placeholder="Password" onChange={(e)=>setPassword(e.target.value)} />
 
-      <button onClick={login}>Login</button>
+        <button className="btn success full" onClick={login}>
+          Login
+        </button>
 
-      <button onClick={() => setView("landing")}>
-        Go Back
-      </button>
+        <button className="btn primary full" onClick={()=>setView("doctorRegister")}>
+          Apply for Approval
+        </button>
+
+        <button className="btn danger full" onClick={()=>setView("landing")}>
+          Go Back
+        </button>
+
+      </div>
     </div>
   );
 }

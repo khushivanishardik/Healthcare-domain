@@ -1,10 +1,13 @@
 import { useState } from "react";
 
 import Landing from "./components/Landing";
+
 import PatientLogin from "./components/PatientLogin";
+import PatientRegister from "./components/PatientRegister";
 import PatientDashboard from "./components/PatientDashboard";
 
 import DoctorLogin from "./components/DoctorLogin";
+import DoctorRegister from "./components/DoctorRegister";
 import DoctorDashboard from "./components/DoctorDashboard";
 
 import AdminDashboard from "./components/AdminDashboard";
@@ -20,12 +23,9 @@ export default function App() {
 
     <div>
 
-      {/* LANDING */}
-      {view === "landing" && (
-        <Landing setView={setView} />
-      )}
+      {view === "landing" && <Landing setView={setView} />}
 
-      {/* PATIENT LOGIN */}
+      {/* PATIENT */}
       {view === "patientLogin" && (
         <PatientLogin
           setView={setView}
@@ -33,7 +33,10 @@ export default function App() {
         />
       )}
 
-      {/* PATIENT DASHBOARD */}
+      {view === "patientRegister" && (
+        <PatientRegister setView={setView} />
+      )}
+
       {view === "patientDashboard" && (
         patientEmail ? (
           <PatientDashboard
@@ -41,13 +44,11 @@ export default function App() {
             currentUserEmail={patientEmail}
           />
         ) : (
-          <h1 style={{ color: "white", textAlign: "center" }}>
-            Loading Patient...
-          </h1>
+          <h1 style={{ color: "white" }}>Loading Patient...</h1>
         )
       )}
 
-      {/* DOCTOR LOGIN */}
+      {/* DOCTOR */}
       {view === "doctorLogin" && (
         <DoctorLogin
           setView={setView}
@@ -55,7 +56,10 @@ export default function App() {
         />
       )}
 
-      {/* DOCTOR DASHBOARD */}
+      {view === "doctorRegister" && (
+        <DoctorRegister setView={setView} />
+      )}
+
       {view === "doctorDashboard" && (
         doctorEmail ? (
           <DoctorDashboard
@@ -63,13 +67,11 @@ export default function App() {
             currentDoctorEmail={doctorEmail}
           />
         ) : (
-          <h1 style={{ color: "white", textAlign: "center" }}>
-            Loading Doctor...
-          </h1>
+          <h1 style={{ color: "white" }}>Loading Doctor...</h1>
         )
       )}
 
-      {/* ADMIN DASHBOARD */}
+      {/* ADMIN */}
       {view === "adminDashboard" && (
         <AdminDashboard setView={setView} />
       )}

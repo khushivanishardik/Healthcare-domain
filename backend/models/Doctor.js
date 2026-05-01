@@ -5,11 +5,7 @@ const doctorSchema = new mongoose.Schema({
   email: String,
   password: String,
   specialization: String,
-
-  approved: {
-    type: Boolean,
-    default: false,
-  },
+  approved: { type: Boolean, default: false }
 });
 
 module.exports = mongoose.model("Doctor", doctorSchema);
